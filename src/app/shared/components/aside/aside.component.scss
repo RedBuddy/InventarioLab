@@ -37,13 +37,15 @@ aside {
 
   nav {
     flex: 1;
+    padding-left: 1.5rem;
+    margin-top: 1rem;
 
     ul {
       list-style: none;
       padding: 0;
 
       li {
-        margin-bottom: 1rem;
+        margin-bottom: 1.8rem;
 
         a {
           text-decoration: none;
@@ -57,7 +59,7 @@ aside {
           }
 
           &:hover {
-            color: #007bff;
+            color: $logo-verde;
           }
         }
       }
@@ -65,8 +67,9 @@ aside {
   }
 
   footer {
-    .config,
-    .logout {
+    display: flex;
+    justify-content: center;
+    .botones {
       margin-bottom: 1rem;
 
       a {
@@ -75,13 +78,14 @@ aside {
         font-size: 1rem;
         display: flex;
         align-items: center;
+        margin-bottom: 1rem;
 
         i {
           margin-right: 0.5rem;
         }
 
         &:hover {
-          color: #007bff;
+          color: $logo-verde;
         }
       }
     }
