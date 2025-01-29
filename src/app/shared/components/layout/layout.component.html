@@ -1,2 +1,13 @@
-<app-header></app-header>
-<router-outlet></router-outlet>
+<div class="layout">
+  <aside class="sidebar">
+    <app-aside></app-aside>
+  </aside>
+  <div class="main-content">
+    <header class="search-bar">
+      <app-search></app-search>
+    </header>
+    <main>
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
