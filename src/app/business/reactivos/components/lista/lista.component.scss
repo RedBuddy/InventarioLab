@@ -1,0 +1,138 @@
+// reactivos.component.scss
+.reactivos-container {
+  margin: 2rem;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 0.3rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    h2 {
+      color: #2c3e50;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      .icon {
+        color: #3498db;
+        font-size: 1.2em;
+      }
+    }
+
+    .actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+
+      .search-box {
+        position: relative;
+
+        input {
+          padding: 0.5rem 1rem 0.5rem 2rem;
+          border: 1px solid #bdc3c7;
+          border-radius: 4px;
+          width: 250px;
+        }
+
+        .search-icon {
+          position: absolute;
+          left: 0.75rem;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #7f8c8d;
+        }
+      }
+    }
+  }
+
+  .reactivos-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #bdc3c7;
+    }
+
+    th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+    }
+
+    .stock-critical {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+
+    .stock-warning {
+      color: #f39c12;
+      font-weight: bold;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+
+      .btn-icon {
+        padding: 0.5rem;
+        border-radius: 4px;
+        transition: all 0.2s;
+        border: none;
+        background: none;
+        cursor: pointer;
+
+        &:hover {
+          background: rgba(44, 62, 80, 0.1);
+        }
+
+        &.danger:hover {
+          background: rgba(231, 76, 60, 0.1);
+        }
+      }
+    }
+  }
+
+  .pagination {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+
+    button {
+      padding: 0.5rem 1rem;
+      border: 1px solid #bdc3c7;
+      border-radius: 4px;
+      background: white;
+      cursor: pointer;
+
+      &.active {
+        background: #2c3e50;
+        color: white;
+        border-color: #2c3e50;
+      }
+    }
+  }
+}
+
+.btn-primary {
+  background: #2c3e50;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #34495e;
+  }
+}
