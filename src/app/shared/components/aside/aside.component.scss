@@ -1,4 +1,5 @@
-$logo-verde: #008000c1;
+$logo-verde: #006c00c1;
+$activo-verde: #008000c1;
 // $base-font-size: 16px;
 
 aside {
@@ -60,6 +61,10 @@ aside {
 
           &:hover {
             color: $logo-verde;
+          }
+
+          &.active-link {
+            color: $activo-verde;
           }
         }
       }

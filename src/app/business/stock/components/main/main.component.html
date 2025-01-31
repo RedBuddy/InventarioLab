@@ -1,0 +1,99 @@
+<!-- stock.component.html -->
+<div class="stock-container">
+  <!-- Header Section -->
+  <div class="stock-header">
+    <h2>
+      <i class="fas fa-boxes icon"></i>
+      Gestión de Stock
+    </h2>
+
+    <div class="stock-actions">
+      <div class="stock-search">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" placeholder="Buscar artículos..." [(ngModel)]="searchText">
+      </div>
+
+      <button class="stock-btn-primary">
+        <i class="fas fa-sync-alt"></i>
+        Actualizar Stock
+      </button>
+    </div>
+  </div>
+
+  <!-- Stock Summary Cards -->
+  <div class="stock-summary">
+    <div class="summary-card critical">
+      <i class="fas fa-exclamation-triangle"></i>
+      <div>
+        <span class="summary-count">3</span>
+        <span class="summary-label">Artículos críticos</span>
+      </div>
+    </div>
+
+    <div class="summary-card warning">
+      <i class="fas fa-clock"></i>
+      <div>
+        <span class="summary-count">12</span>
+        <span class="summary-label">Por debajo del mínimo</span>
+      </div>
+    </div>
+
+    <div class="summary-card total">
+      <i class="fas fa-cubes"></i>
+      <div>
+        <span class="summary-count">868</span>
+        <span class="summary-label">Total reactivos</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stock Table -->
+  <div class="stock-table-container">
+    <table class="stock-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Categoría</th>
+          <th>Stock Actual</th>
+          <th>Stock Mínimo</th>
+          <th>Último Movimiento</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of stockItems">
+          <td>{{ item.nombre }}</td>
+          <td>{{ item.categoria }}</td>
+          <td [class]="getStockClass(item.stockActual, item.stockMinimo)">
+            {{ item.stockActual }}
+          </td>
+          <td>{{ item.stockMinimo }}</td>
+          <td>{{ item.ultimoMovimiento | date: 'dd/MM/yyyy' }}</td>
+          <td class="stock-actions">
+            <button class="stock-btn-icon info">
+              <i class="fas fa-history"></i>
+            </button>
+            <button class="stock-btn-icon">
+              <i class="fas fa-edit"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Table Footer -->
+  <div class="stock-footer">
+    <button class="stock-btn-export">
+      <i class="fas fa-file-export"></i>
+      Exportar Reporte
+    </button>
+
+    <div class="stock-pagination">
+      <button *ngFor="let page of [1, 2, 3]" [class.active]="page === currentPage">
+        {{ page }}
+      </button>
+    </div>
+  </div>
+</div>
