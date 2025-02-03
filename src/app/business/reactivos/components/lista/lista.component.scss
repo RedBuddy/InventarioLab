@@ -1,138 +1,299 @@
 // reactivos.component.scss
 .reactivos-container {
+  // Variables locales
+  $primary: #2c3e50;
+  $accent: #3498db;
+  $success: #27ae60;
+  $warning: #f1c40f;
+  $danger: #e74c3c;
+  $border: #bdc3c7;
+  $text-muted: #7f8c8d;
+
   margin: 2rem;
   padding: 2rem;
   background: #fff;
   border-radius: 0.3rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", system-ui;
 
-  .header {
+  .reactivos-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
 
     h2 {
-      color: #2c3e50;
+      color: $primary;
+      margin: 0;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.8rem;
+      font-size: 1.6rem;
 
       .icon {
-        color: #3498db;
-        font-size: 1.2em;
+        color: $accent;
+        font-size: 1.4rem;
       }
     }
+  }
 
-    .actions {
+  .reactivos-btn-primary {
+    background: $primary;
+    color: white;
+    padding: 0.8rem 1.8rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+
+    &:hover {
+      background: darken($primary, 8%);
+    }
+
+    i {
+      font-size: 1rem;
+    }
+  }
+
+  .reactivos-filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: lighten($border, 12%);
+    border-radius: 8px;
+
+    .filter-group {
       display: flex;
-      gap: 1rem;
-      align-items: center;
+      flex-direction: column;
+      gap: 0.5rem;
 
-      .search-box {
-        position: relative;
+      label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: $primary;
+        font-weight: 500;
 
-        input {
-          padding: 0.5rem 1rem 0.5rem 2rem;
-          border: 1px solid #bdc3c7;
-          border-radius: 4px;
-          width: 250px;
+        i {
+          color: $accent;
         }
+      }
 
-        .search-icon {
-          position: absolute;
-          left: 0.75rem;
-          top: 50%;
-          transform: translateY(-50%);
-          color: #7f8c8d;
+      input,
+      select {
+        padding: 0.7rem;
+        border: 1px solid $border;
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 0.95rem;
+        transition: border-color 0.2s;
+
+        &:focus {
+          outline: none;
+          border-color: $accent;
         }
       }
     }
+
+    .reactivos-btn-secondary {
+      align-self: flex-end;
+      background: $accent;
+      color: white;
+      padding: 0.8rem 1.8rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      transition: background 0.2s;
+
+      &:hover {
+        background: darken($accent, 8%);
+      }
+    }
+  }
+
+  .reactivos-table-container {
+    border: 1px solid $border;
+    border-radius: 8px;
+    overflow: hidden;
   }
 
   .reactivos-table {
     width: 100%;
     border-collapse: collapse;
+    background: white;
 
     th,
     td {
-      padding: 1rem;
+      padding: 1.2rem;
       text-align: left;
-      border-bottom: 1px solid #bdc3c7;
+      font-size: 0.95rem;
     }
 
     th {
-      background-color: #f8f9fa;
+      background: lighten($border, 12%);
+      color: darken($primary, 10%);
       font-weight: 600;
+      border-bottom: 2px solid $border;
+    }
+
+    td {
+      border-bottom: 1px solid $border;
+    }
+
+    .reactivo-category {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+
+      &.quimicos {
+        background: rgba($accent, 0.1);
+        color: $accent;
+      }
+
+      &.biologicos {
+        background: rgba($success, 0.1);
+        color: $success;
+      }
+
+      &.especiales {
+        background: rgba($warning, 0.1);
+        color: darken($warning, 15%);
+      }
     }
 
     .stock-critical {
-      color: #e74c3c;
-      font-weight: bold;
+      color: $danger;
+      font-weight: 600;
     }
 
     .stock-warning {
-      color: #f39c12;
-      font-weight: bold;
+      color: $warning;
+      font-weight: 600;
     }
 
-    .actions {
-      display: flex;
-      gap: 0.5rem;
+    .expiration-warning {
+      color: $warning;
+      font-weight: 600;
+    }
 
-      .btn-icon {
-        padding: 0.5rem;
-        border-radius: 4px;
-        transition: all 0.2s;
+    .expiration-critical {
+      color: $danger;
+      font-weight: 600;
+    }
+
+    .reactivos-actions {
+      display: flex;
+      gap: 0.8rem;
+
+      .reactivos-btn-icon {
+        padding: 0.6rem;
+        border-radius: 6px;
         border: none;
         background: none;
         cursor: pointer;
+        transition: all 0.2s;
+        color: $primary;
 
         &:hover {
-          background: rgba(44, 62, 80, 0.1);
+          background: rgba($primary, 0.1);
         }
 
-        &.danger:hover {
-          background: rgba(231, 76, 60, 0.1);
+        &.danger {
+          color: $danger;
+
+          &:hover {
+            background: rgba($danger, 0.1);
+          }
+        }
+
+        &.info {
+          color: $accent;
+
+          &:hover {
+            background: rgba($accent, 0.1);
+          }
+        }
+
+        i {
+          font-size: 1.1rem;
         }
       }
     }
   }
 
-  .pagination {
-    margin-top: 1rem;
+  .reactivos-footer {
+    margin-top: 1.5rem;
     display: flex;
-    gap: 0.5rem;
+    justify-content: space-between;
+    align-items: center;
 
-    button {
-      padding: 0.5rem 1rem;
-      border: 1px solid #bdc3c7;
-      border-radius: 4px;
-      background: white;
+    .reactivos-btn-export {
+      background: $success;
+      color: white;
+      padding: 0.7rem 1.5rem;
+      border: none;
+      border-radius: 6px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      transition: background 0.2s;
 
-      &.active {
-        background: #2c3e50;
-        color: white;
-        border-color: #2c3e50;
+      &:hover {
+        background: darken($success, 8%);
+      }
+    }
+
+    .reactivos-pagination {
+      display: flex;
+      gap: 0.6rem;
+
+      button {
+        padding: 0.6rem 1.2rem;
+        border: 1px solid $border;
+        border-radius: 6px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover:not(.active) {
+          background: lighten($border, 10%);
+        }
+
+        &.active {
+          background: $primary;
+          color: white;
+          border-color: $primary;
+        }
       }
     }
   }
-}
 
-.btn-primary {
-  background: #2c3e50;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: background 0.2s;
+  @media (max-width: 768px) {
+    padding: 1.2rem;
 
-  &:hover {
-    background: #34495e;
+    .reactivos-filters {
+      grid-template-columns: 1fr;
+    }
+
+    .reactivos-table-container {
+      overflow-x: auto;
+    }
+
+    .reactivos-footer {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
+    }
   }
 }

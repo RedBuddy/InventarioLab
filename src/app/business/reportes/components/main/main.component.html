@@ -1,1 +1,130 @@
-<p>main works!</p>
+<!-- reportes.component.html -->
+<div class="reportes-container">
+  <!-- Header Section -->
+  <div class="reportes-header">
+    <h2>
+      <i class="fas fa-chart-line icon"></i>
+      Generación de Reportes
+    </h2>
+
+    <div class="reportes-actions">
+      <button class="reportes-btn-primary">
+        <i class="fas fa-plus"></i>
+        Nuevo Reporte
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="reportes-filters">
+    <div class="filter-group">
+      <label for="reportType">
+        <i class="fas fa-filter"></i>
+        Tipo de Reporte
+      </label>
+      <select id="reportType" [(ngModel)]="selectedReportType">
+        <option value="stock">Stock Actual</option>
+        <option value="movimientos">Movimientos</option>
+        <option value="caducidad">Caducidad</option>
+        <option value="consumo">Consumo</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="dateRange">
+        <i class="fas fa-calendar-alt"></i>
+        Rango de Fechas
+      </label>
+      <input type="date" id="startDate" [(ngModel)]="startDate">
+      <span>a</span>
+      <input type="date" id="endDate" [(ngModel)]="endDate">
+    </div>
+
+    <button class="reportes-btn-generate">
+      <i class="fas fa-play"></i>
+      Generar Reporte
+    </button>
+  </div>
+
+  <!-- Report Content -->
+  <div class="reportes-content">
+    <!-- Report Preview -->
+    <div class="report-preview">
+      <div class="preview-header">
+        <h3>Vista Previa del Reporte</h3>
+        <div class="preview-actions">
+          <button class="reportes-btn-icon">
+            <i class="fas fa-download"></i>
+          </button>
+          <button class="reportes-btn-icon">
+            <i class="fas fa-print"></i>
+          </button>
+          <button class="reportes-btn-icon">
+            <i class="fas fa-share"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="preview-content">
+        <div class="chart-container">
+          <canvas #reportChart></canvas>
+        </div>
+
+        <div class="data-summary">
+          <div class="summary-card">
+            <i class="fas fa-box"></i>
+            <div>
+              <span class="summary-value">868</span>
+              <span class="summary-label">Reactivos</span>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div>
+              <span class="summary-value">12</span>
+              <span class="summary-label">Críticos</span>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <i class="fas fa-clock"></i>
+            <div>
+              <span class="summary-value">45</span>
+              <span class="summary-label">Por Caducar</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generated Reports List -->
+    <div class="generated-reports">
+      <h3>Reportes Generados</h3>
+
+      <div class="reports-list">
+        <div class="report-item" *ngFor="let report of reports">
+          <div class="report-info">
+            <i class="fas fa-file-alt"></i>
+            <div>
+              <span class="report-title">{{ report.title }}</span>
+              <span class="report-date">{{ report.date | date: 'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
+
+          <div class="report-actions">
+            <button class="reportes-btn-icon">
+              <i class="fas fa-eye"></i>
+            </button>
+            <button class="reportes-btn-icon">
+              <i class="fas fa-download"></i>
+            </button>
+            <button class="reportes-btn-icon danger">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

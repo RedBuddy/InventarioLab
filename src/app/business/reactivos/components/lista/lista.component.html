@@ -1,27 +1,51 @@
 <!-- reactivos.component.html -->
 <div class="reactivos-container">
   <!-- Header Section -->
-  <div class="header">
+  <div class="reactivos-header">
     <h2>
-      <i class="fas fa-filter icon"></i>
+      <i class="fas fa-flask icon"></i>
       Gestión de Reactivos
     </h2>
 
-    <div class="actions">
-      <div class="search-box">
-        <i class="fas fa-search search-icon"></i>
-        <input type="text" placeholder="Buscar reactivo..." [(ngModel)]="searchText">
-      </div>
-
-      <button class="btn-primary">
+    <div class="reactivos-actions">
+      <button class="reactivos-btn-primary">
         <i class="fas fa-plus"></i>
         Nuevo Reactivo
       </button>
     </div>
   </div>
 
+  <!-- Filters Section -->
+  <div class="reactivos-filters">
+    <div class="filter-group">
+      <label for="searchReactivo">
+        <i class="fas fa-search"></i>
+        Buscar Reactivo
+      </label>
+      <input type="text" id="searchReactivo" placeholder="Nombre, categoría o ubicación..." [(ngModel)]="searchText">
+    </div>
+
+    <div class="filter-group">
+      <label for="reactivoCategory">
+        <i class="fas fa-tags"></i>
+        Categoría
+      </label>
+      <select id="reactivoCategory" [(ngModel)]="selectedCategory">
+        <option value="">Todas</option>
+        <option value="quimicos">Químicos</option>
+        <option value="biologicos">Biológicos</option>
+        <option value="especiales">Especiales</option>
+      </select>
+    </div>
+
+    <button class="reactivos-btn-secondary">
+      <i class="fas fa-filter"></i>
+      Aplicar Filtros
+    </button>
+  </div>
+
   <!-- Reactivos Table -->
-  <div class="table-responsive">
+  <div class="reactivos-table-container">
     <table class="reactivos-table">
       <thead>
         <tr>
@@ -35,21 +59,29 @@
       </thead>
 
       <tbody>
-        <tr *ngFor="let reactivo of reactivos">
+        <tr *ngFor="let reactivo of filteredReactivos">
           <td>{{ reactivo.nombre }}</td>
-          <td>{{ reactivo.categoria }}</td>
-          <td [class.stock-critical]="reactivo.stock === 0"
-            [class.stock-warning]="reactivo.stock > 0 && reactivo.stock <= 2">
+          <td>
+            <span class="reactivo-category" [class]="reactivo.categoria">
+              {{ reactivo.categoria }}
+            </span>
+          </td>
+          <td [class]="getStockClass(reactivo.stock)">
             {{ reactivo.stock }}
           </td>
           <td>{{ reactivo.ubicacion }}</td>
-          <td>{{ reactivo.caducidad | date: 'dd/MM/yyyy' }}</td>
-          <td class="actions">
-            <button class="btn-icon">
+          <td [class]="getExpirationClass(reactivo.caducidad)">
+            {{ reactivo.caducidad | date: 'dd/MM/yyyy' }}
+          </td>
+          <td class="reactivos-actions">
+            <button class="reactivos-btn-icon">
               <i class="fas fa-edit"></i>
             </button>
-            <button class="btn-icon danger">
+            <button class="reactivos-btn-icon danger">
               <i class="fas fa-trash-alt"></i>
+            </button>
+            <button class="reactivos-btn-icon info">
+              <i class="fas fa-info-circle"></i>
             </button>
           </td>
         </tr>
@@ -57,10 +89,17 @@
     </table>
   </div>
 
-  <!-- Pagination -->
-  <div class="pagination">
-    <button *ngFor="let page of [1, 2, 3]" [class.active]="page === currentPage">
-      {{ page }}
+  <!-- Table Footer -->
+  <div class="reactivos-footer">
+    <button class="reactivos-btn-export">
+      <i class="fas fa-file-export"></i>
+      Exportar Reporte
     </button>
+
+    <div class="reactivos-pagination">
+      <button *ngFor="let page of [1, 2, 3]" [class.active]="page === currentPage">
+        {{ page }}
+      </button>
+    </div>
   </div>
 </div>

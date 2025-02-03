@@ -31,6 +31,16 @@ export const routes: Routes = [
         //canActivate: [authGuard]
       },
       {
+        path: 'reportes',
+        loadComponent: () => import('./business/reportes/components/main/main.component'),
+        //canActivate: [authGuard]
+      },
+      {
+        path: 'usuarios',
+        loadComponent: () => import('./business/usuarios/components/main/main.component'),
+        //canActivate: [authGuard]
+      },
+      {
         path: '',
         redirectTo: 'inicio',
         pathMatch: 'full'

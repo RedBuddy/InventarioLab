@@ -1,33 +1,56 @@
 <!-- equipos.component.html -->
 <div class="equipos-container">
   <!-- Header Section -->
-  <div class="header">
+  <div class="equipos-header">
     <h2>
       <i class="fas fa-microscope icon"></i>
       Gestión de Equipos
     </h2>
 
-    <div class="actions">
-      <div class="search-box">
-        <i class="fas fa-search search-icon"></i>
-        <input type="text" placeholder="Buscar equipo..." [(ngModel)]="searchText">
-      </div>
-
-      <button class="btn-primary">
+    <div class="equipos-actions">
+      <button class="equipos-btn-primary">
         <i class="fas fa-plus"></i>
         Nuevo Equipo
       </button>
     </div>
   </div>
 
+  <!-- Filters Section -->
+  <div class="equipos-filters">
+    <div class="filter-group">
+      <label for="searchEquipo">
+        <i class="fas fa-search"></i>
+        Buscar Equipo
+      </label>
+      <input type="text" id="searchEquipo" placeholder="Nombre, tipo o ubicación..." [(ngModel)]="searchText">
+    </div>
+
+    <div class="filter-group">
+      <label for="equipoStatus">
+        <i class="fas fa-info-circle"></i>
+        Estado
+      </label>
+      <select id="equipoStatus" [(ngModel)]="selectedStatus">
+        <option value="">Todos</option>
+        <option value="activo">Activo</option>
+        <option value="mantenimiento">En Mantenimiento</option>
+        <option value="inactivo">Inactivo</option>
+      </select>
+    </div>
+
+    <button class="equipos-btn-secondary">
+      <i class="fas fa-filter"></i>
+      Aplicar Filtros
+    </button>
+  </div>
+
   <!-- Equipos Table -->
-  <div class="table-responsive">
+  <div class="equipos-table-container">
     <table class="equipos-table">
       <thead>
         <tr>
           <th>Nombre</th>
           <th>Tipo</th>
-          <th>N° Serie</th>
           <th>Ubicación</th>
           <th>Estado</th>
           <th>Última Calibración</th>
@@ -36,26 +59,31 @@
       </thead>
 
       <tbody>
-        <tr *ngFor="let equipo of equipos">
+        <tr *ngFor="let equipo of filteredEquipos">
           <td>{{ equipo.nombre }}</td>
-          <td>{{ equipo.tipo }}</td>
-          <td>{{ equipo.numeroSerie }}</td>
-          <td>{{ equipo.ubicacion }}</td>
           <td>
-            <span [class]="getEstadoClass(equipo.estado)">
-              <i class="fas fa-circle status-icon"></i>
-              {{ equipo.estado }}
+            <span class="equipo-type" [class]="equipo.tipo">
+              {{ equipo.tipo }}
             </span>
           </td>
-          <td>{{ equipo.ultimaCalibracion | date: 'dd/MM/yyyy' }}</td>
-          <td class="actions">
-            <button class="btn-icon">
+          <td>{{ equipo.ubicacion }}</td>
+          <td>
+            <span class="equipo-status" [class]="equipo.estado">
+              <i class="fas fa-circle"></i>
+              {{ equipo.estado | titlecase }}
+            </span>
+          </td>
+          <td [class]="getCalibrationClass(equipo.ultimaCalibracion)">
+            {{ equipo.ultimaCalibracion | date: 'dd/MM/yyyy' }}
+          </td>
+          <td class="equipos-actions">
+            <button class="equipos-btn-icon">
               <i class="fas fa-edit"></i>
             </button>
-            <button class="btn-icon danger">
+            <button class="equipos-btn-icon danger">
               <i class="fas fa-trash-alt"></i>
             </button>
-            <button class="btn-icon info">
+            <button class="equipos-btn-icon info">
               <i class="fas fa-info-circle"></i>
             </button>
           </td>
@@ -64,10 +92,17 @@
     </table>
   </div>
 
-  <!-- Pagination -->
-  <div class="pagination">
-    <button *ngFor="let page of [1, 2, 3]" [class.active]="page === currentPage">
-      {{ page }}
+  <!-- Table Footer -->
+  <div class="equipos-footer">
+    <button class="equipos-btn-export">
+      <i class="fas fa-file-export"></i>
+      Exportar Reporte
     </button>
+
+    <div class="equipos-pagination">
+      <button *ngFor="let page of [1, 2, 3]" [class.active]="page === currentPage">
+        {{ page }}
+      </button>
+    </div>
   </div>
 </div>
