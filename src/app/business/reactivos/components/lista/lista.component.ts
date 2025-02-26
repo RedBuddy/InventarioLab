@@ -1,70 +1,176 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { IReactivo } from '../../../../core/models/reactivo.model';
+import { ICategoria } from '../../../../core/models/categoria.model';
+import { ReactivoService } from '../../../../core/services/reactivo.service';
+import { CategoriaService } from '../../../../core/services/categoria.service';
 
 @Component({
   selector: 'app-lista',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './lista.component.html',
-  styleUrl: './lista.component.scss'
+  styleUrls: ['./lista.component.scss']
 })
-export default class ListaComponent {
 
-  searchText = '';
-  selectedCategory = '';
-  currentPage = 1;
+export default class ListaComponent implements OnInit {
 
-  reactivos = [
-    {
-      nombre: 'BENZENETRICARBOXYLIC ACID',
-      categoria: 'quimicos',
-      stock: 0,
-      ubicacion: 'A23',
-      caducidad: '2025-12-31'
-    },
-    {
-      nombre: 'Cyclohexane-tricarboxilic acid',
-      categoria: 'quimicos',
-      stock: 1,
-      ubicacion: 'B12',
-      caducidad: '2024-11-30'
-    },
-    {
-      nombre: 'SULFONYL-DIMIDAZOLE',
-      categoria: 'especiales',
-      stock: 5,
-      ubicacion: 'C45',
-      caducidad: '2024-06-15'
-    }
-  ];
+  reactivos: IReactivo[] = [];
+  filteredReactivos: IReactivo[] = [];
+  categorias: ICategoria[] = [];
+  searchText: string = '';
+  selectedCategory: string = '';
+  errorMessage: string | null = null;
+  isModalOpen: boolean = false;
+  isEditModalOpen: boolean = false;
+  reactivoSeleccionado: IReactivo = {
+    id: 0,
+    nombre: '',
+    cantidad_total: 0,
+    unidad_medida: '',
+    categoria_id: 0,
+    estado: 'disponible'
+  };
 
-  get filteredReactivos() {
-    return this.reactivos.filter(reactivo => {
-      const matchesSearch = reactivo.nombre.toLowerCase().includes(this.searchText.toLowerCase()) ||
-        reactivo.categoria.toLowerCase().includes(this.searchText.toLowerCase()) ||
-        reactivo.ubicacion.toLowerCase().includes(this.searchText.toLowerCase());
+  nuevoReactivo: IReactivo = {
+    id: 0,
+    nombre: '',
+    cantidad_total: 0,
+    unidad_medida: '',
+    categoria_id: 0,
+    estado: 'disponible'
+  };
 
-      const matchesCategory = this.selectedCategory ? reactivo.categoria === this.selectedCategory : true;
+  constructor(
+    private reactivoService: ReactivoService,
+    private categoriaService: CategoriaService,
+    private router: Router
+  ) { }
 
-      return matchesSearch && matchesCategory;
+  ngOnInit(): void {
+    this.cargarReactivos();
+    this.cargarCategorias();
+  }
+
+  cargarReactivos(): void {
+    this.reactivoService.getReactivos().subscribe({
+      next: (data: IReactivo[]) => {
+        this.reactivos = data;
+        this.filteredReactivos = data;
+        this.errorMessage = null;
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+      }
     });
   }
 
+  cargarCategorias(): void {
+    this.categoriaService.getCategorias().subscribe({
+      next: (data: ICategoria[]) => {
+        this.categorias = data;
+        this.errorMessage = null;
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+      }
+    });
+  }
+
+  filtrarReactivos(): void {
+    this.filteredReactivos = this.reactivos.filter(reactivo => {
+      return (this.searchText === '' || reactivo.nombre.toLowerCase().includes(this.searchText.toLowerCase())) &&
+        (this.selectedCategory === '' || reactivo.categoria_id === +this.selectedCategory);
+    });
+  }
+
+  getCategoriaNombre(categoria_id: number): string {
+    const categoria = this.categorias.find(cat => cat.id === categoria_id);
+    return categoria ? categoria.nombre : 'Desconocida';
+  }
+
   getStockClass(stock: number): string {
-    if (stock === 0) return 'stock-critical';
-    if (stock <= 2) return 'stock-warning';
-    return '';
+    if (stock <= 5) {
+      return 'stock-critical';
+    } else if (stock <= 10) {
+      return 'stock-warning';
+    } else {
+      return 'stock-normal';
+    }
   }
 
-  getExpirationClass(date: string): string {
-    const expirationDate = new Date(date);
-    const today = new Date();
-    const diffTime = expirationDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    if (diffDays <= 0) return 'expiration-critical';
-    if (diffDays <= 30) return 'expiration-warning';
-    return '';
+  abrirModal(): void {
+    this.isModalOpen = true;
   }
+
+  cerrarModal(): void {
+    this.isModalOpen = false;
+  }
+
+  abrirModalEdicion(reactivo: IReactivo): void {
+    this.reactivoSeleccionado = { ...reactivo };
+    this.isEditModalOpen = true;
+  }
+
+  cerrarModalEdicion(): void {
+    this.isEditModalOpen = false;
+  }
+
+  agregarReactivo(): void {
+    this.reactivoService.createReactivo(this.nuevoReactivo).subscribe({
+      next: (reactivo: IReactivo) => {
+        this.reactivos.push(reactivo);
+        this.filteredReactivos = this.reactivos;
+        this.nuevoReactivo = {
+          id: 0,
+          nombre: '',
+          cantidad_total: 0,
+          unidad_medida: '',
+          categoria_id: 0,
+          estado: 'disponible'
+        };
+        this.errorMessage = null;
+        this.cerrarModal();
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+      }
+    });
+  }
+
+  actualizarReactivo(): void {
+    if (this.reactivoSeleccionado) {
+      this.reactivoService.updateReactivo(this.reactivoSeleccionado.id, this.reactivoSeleccionado).subscribe({
+        next: (reactivo: IReactivo) => {
+          const index = this.reactivos.findIndex(r => r.id === reactivo.id);
+          if (index !== -1) {
+            this.reactivos[index] = reactivo;
+            this.filteredReactivos = this.reactivos;
+          }
+          this.errorMessage = null;
+          this.cerrarModalEdicion();
+        },
+        error: (err) => {
+          this.errorMessage = err.message;
+        }
+      });
+    }
+  }
+
+  eliminarReactivo(id: number): void {
+    if (confirm('¿Estás seguro de que deseas eliminar este reactivo?')) {
+      this.reactivoService.deleteReactivo(id).subscribe({
+        next: () => {
+          this.cargarReactivos();
+          this.errorMessage = null;
+        },
+        error: (err) => {
+          this.errorMessage = err.message;
+        }
+      });
+    }
+  }
+
 }

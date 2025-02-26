@@ -1,17 +1,18 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError, switchMap } from 'rxjs/operators';
-import { IUser } from '../models/user.model';
+import { IUsuario } from '../models/usuario.model';
+import { UsuarioService } from './usuario.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private login_url: string = 'http://localhost:3000/login';
-  private register_url: string = 'http://localhost:3000/users';
-  private profile_img_url: string = 'http://localhost:3000/users/profile_img';
+  // private register_url: string = 'http://localhost:3000/users';
+  // private profile_img_url: string = 'http://localhost:3000/users/profile_img';
   private tokenKey = 'auth_token';
   private refresh_url: string = 'http://localhost:3000/refresh-token';
   private RefreshTokenKey = 'refresh_token';
@@ -26,69 +27,47 @@ export class AuthService {
   private userImageSubject = new BehaviorSubject<string | null>(this.getUserImageFromStorage());
   userImage$ = this.userImageSubject.asObservable();
 
-  constructor(private HttpClient: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, private usuarioService: UsuarioService) { }
 
   login(identifier: string, password: string): Observable<any> {
-    return this.HttpClient.post<any>(this.login_url, { identifier, password }).pipe(
+    return this.http.post<any>(this.login_url, { identifier, password }).pipe(
       tap(res => {
         if (res.token) {
           this.setToken(res.token);
           this.setRefreshToken(res.refreshToken);
-          this.autoRefreshToken();
           this.isAuthenticatedSubject.next(true);
-          this.userRoleSubject.next(this.getUserRole());
-          this.fetchUserProfileImage(this.getUserIdFromToken(res.token)); // Obtener la imagen del usuario
-          this.router.navigate(['/inicio']);
+          this.userRoleSubject.next(res.user.role);
+          this.userImageSubject.next(res.user.image);
         }
       }),
-      catchError(error => {
-        console.error('Error during login:', error);
-        return throwError(error);
-      })
+      catchError(this.handleError)
     );
   }
 
-  register(formData: FormData): Observable<any> {
-    return this.HttpClient.post<any>(this.register_url, formData).pipe(
-      switchMap(res => this.login(formData.get('email') as string, formData.get('password') as string)),
+  // register(usuario: IUsuario): Observable<IUsuario> {
+  //   return this.usuarioService.createUsuario(usuario).pipe(
+  //     catchError(this.handleError)
+  //   );
+  // }
+
+  logout(): void {
+    this.clearSession();
+    this.isAuthenticatedSubject.next(false);
+    this.userRoleSubject.next(null);
+    this.userImageSubject.next(null);
+    this.router.navigate(['/login']);
+  }
+
+  refreshToken(): Observable<any> {
+    const refreshToken = this.getRefreshToken();
+    return this.http.post<any>(this.refresh_url, { refreshToken }).pipe(
       tap(res => {
         if (res.token) {
           this.setToken(res.token);
-          this.setRefreshToken(res.refreshToken);
-          this.autoRefreshToken();
-          this.isAuthenticatedSubject.next(true);
-          this.userRoleSubject.next(this.getUserRole());
-          this.fetchUserProfileImage(this.getUserIdFromToken(res.token)); // Obtener la imagen del usuario
-          this.router.navigate(['/inicio']);
         }
       }),
-      catchError(error => {
-        console.error('Error during registration:', error);
-        return throwError(error);
-      })
+      catchError(this.handleError)
     );
-  }
-
-  private fetchUserProfileImage(userId: number | null): void {
-    if (!userId) {
-      console.error('No user ID found');
-      return;
-    }
-    this.HttpClient.get(`${this.profile_img_url}/${userId}`, { responseType: 'blob' }).pipe(
-      tap(blob => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const imageUrl = reader.result as string;
-          this.userImageSubject.next(imageUrl);
-          this.setUserImage(imageUrl); // Guardar la imagen en el localStorage
-        };
-        reader.readAsDataURL(blob);
-      }),
-      catchError(error => {
-        console.error('Error fetching user profile image:', error);
-        return throwError(error);
-      })
-    ).subscribe();
   }
 
   private setToken(token: string): void {
@@ -107,104 +86,35 @@ export class AuthService {
     return localStorage.getItem(this.RefreshTokenKey);
   }
 
-  refreshToken(): Observable<any> {
-    const refreshToken = this.getRefreshToken();
-    if (!refreshToken) {
-      console.error('No refresh token found');
-      return throwError('No refresh token found');
-    }
-
-    return this.HttpClient.post<any>(this.refresh_url, { refreshToken }).pipe(
-      tap(res => {
-        if (res.token) {
-          this.setToken(res.token);
-          this.setRefreshToken(res.refreshToken);
-          this.autoRefreshToken();
-        } else {
-          console.error('No token in response');
-        }
-      }),
-      catchError(error => {
-        console.error('Error refreshing token:', error);
-        return throwError(error);
-      })
-    );
-  }
-
-  autoRefreshToken(): void {
-    const token = this.getToken();
-    if (!token) {
-      console.error('No token found for auto-refresh');
-      return;
-    }
-
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    const exp = payload.exp * 1000;
-    const timeout = exp - Date.now() - 60000; // Refresh 1 minute before expiration
-
-    if (timeout > 0) {
-      setTimeout(() => {
-        this.refreshToken().subscribe();
-      }, timeout);
-    } else {
-      console.error('Token already expired');
-    }
-  }
-
-  isAuthenticated(): boolean {
-    const token = this.getToken();
-
-    if (!token) {
-      return false
-    }
-
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    const exp = payload.exp * 1000;
-    return Date.now() < exp;
-  }
-
-  getUserRole(): string | null {
-    if (!this.isAuthenticated()) {
-      return null;
-    }
-
-    const token = this.getToken();
-    if (!token) {
-      return null;
-    }
-
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.role || null; // Asume que el rol está en el campo 'role' del payload
-  }
-
-  getUserIdFromToken(token: string): number | null {
-    if (token) {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.user_id;
-    }
-    return null;
-  }
-
-  logout(): void {
+  private clearSession(): void {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.RefreshTokenKey);
     localStorage.removeItem(this.userImageKey);
-    this.isAuthenticatedSubject.next(false);
-    this.userRoleSubject.next(null);
-    this.userImageSubject.next(null);
-    this.router.navigate(['/inicio']);
   }
 
-  private setUserImage(imageUrl: string): void {
-    localStorage.setItem(this.userImageKey, imageUrl);
+  private isAuthenticated(): boolean {
+    return !!this.getToken();
+  }
+
+  private getUserRole(): string | null {
+    // Implementa la lógica para obtener el rol del usuario desde el token o el almacenamiento local
+    return null;
   }
 
   private getUserImageFromStorage(): string | null {
     return localStorage.getItem(this.userImageKey);
   }
 
-  getUserImage(): string | null {
-    return this.userImageSubject.value;
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = 'Algo salió mal, intenta de nuevo.';
+    if (error.error instanceof ErrorEvent) {
+      // Error del lado del cliente
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Error del lado del servidor
+      errorMessage = error.error.message || 'Error del servidor';
+    }
+    console.error('An error occurred:', errorMessage);
+    return throwError({ status: error.status, message: errorMessage });
   }
-
 }

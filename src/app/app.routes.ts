@@ -25,11 +25,11 @@ export const routes: Routes = [
         loadComponent: () => import('./business/equipos/components/lista/lista.component'),
         //canActivate: [authGuard]
       },
-      {
-        path: 'stock',
-        loadComponent: () => import('./business/stock/components/main/main.component'),
-        //canActivate: [authGuard]
-      },
+      // {
+      //   path: 'stock',
+      //   loadComponent: () => import('./business/stock/components/main/main.component'),
+      //   //canActivate: [authGuard]
+      // },
       {
         path: 'reportes',
         loadComponent: () => import('./business/reportes/components/main/main.component'),

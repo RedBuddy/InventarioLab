@@ -7,12 +7,10 @@
       Gestión de Reactivos
     </h2>
 
-    <div class="reactivos-actions">
-      <button class="reactivos-btn-primary">
-        <i class="fas fa-plus"></i>
-        Nuevo Reactivo
-      </button>
-    </div>
+    <button class="reactivos-btn-primary" (click)="abrirModal()">
+      <i class="fas fa-plus"></i>
+      Nuevo Reactivo
+    </button>
   </div>
 
   <!-- Filters Section -->
@@ -22,7 +20,8 @@
         <i class="fas fa-search"></i>
         Buscar Reactivo
       </label>
-      <input type="text" id="searchReactivo" placeholder="Nombre, categoría o ubicación..." [(ngModel)]="searchText">
+      <input type="text" id="searchReactivo" placeholder="Nombre, categoría o ubicación..." [(ngModel)]="searchText"
+        (input)="filtrarReactivos()">
     </div>
 
     <div class="filter-group">
@@ -30,18 +29,11 @@
         <i class="fas fa-tags"></i>
         Categoría
       </label>
-      <select id="reactivoCategory" [(ngModel)]="selectedCategory">
+      <select id="reactivoCategory" [(ngModel)]="selectedCategory" (change)="filtrarReactivos()">
         <option value="">Todas</option>
-        <option value="quimicos">Químicos</option>
-        <option value="biologicos">Biológicos</option>
-        <option value="especiales">Especiales</option>
+        <option *ngFor="let categoria of categorias" [value]="categoria.id">{{ categoria.nombre }}</option>
       </select>
     </div>
-
-    <button class="reactivos-btn-secondary">
-      <i class="fas fa-filter"></i>
-      Aplicar Filtros
-    </button>
   </div>
 
   <!-- Reactivos Table -->
@@ -52,8 +44,8 @@
           <th>Nombre</th>
           <th>Categoría</th>
           <th>Stock</th>
-          <th>Ubicación</th>
-          <th>Caducidad</th>
+          <th>Unidad de Medida</th>
+          <th>Estado</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -61,45 +53,120 @@
       <tbody>
         <tr *ngFor="let reactivo of filteredReactivos">
           <td>{{ reactivo.nombre }}</td>
-          <td>
-            <span class="reactivo-category" [class]="reactivo.categoria">
-              {{ reactivo.categoria }}
-            </span>
+          <td>{{ getCategoriaNombre(reactivo.categoria_id) }}</td>
+          <td [class]="getStockClass(reactivo.cantidad_total)">
+            {{ reactivo.cantidad_total }}
           </td>
-          <td [class]="getStockClass(reactivo.stock)">
-            {{ reactivo.stock }}
-          </td>
-          <td>{{ reactivo.ubicacion }}</td>
-          <td [class]="getExpirationClass(reactivo.caducidad)">
-            {{ reactivo.caducidad | date: 'dd/MM/yyyy' }}
-          </td>
+          <td>{{ reactivo.unidad_medida }}</td>
+          <td>{{ reactivo.estado }}</td>
           <td class="reactivos-actions">
-            <button class="reactivos-btn-icon">
+            <button class="reactivos-btn-icon" (click)="abrirModalEdicion(reactivo)">
               <i class="fas fa-edit"></i>
             </button>
-            <button class="reactivos-btn-icon danger">
+            <button class="reactivos-btn-icon danger" (click)="eliminarReactivo(reactivo.id)">
               <i class="fas fa-trash-alt"></i>
-            </button>
-            <button class="reactivos-btn-icon info">
-              <i class="fas fa-info-circle"></i>
             </button>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
+</div>
 
-  <!-- Table Footer -->
-  <div class="reactivos-footer">
-    <button class="reactivos-btn-export">
-      <i class="fas fa-file-export"></i>
-      Exportar Reporte
-    </button>
+<!-- Modal para agregar reactivo -->
+<div class="modal" [ngClass]="{'show': isModalOpen}" [ngStyle]="{'display': isModalOpen ? 'block' : 'none'}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nuevo Reactivo</h5>
+        <button type="button" class="close" (click)="cerrarModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="agregarReactivo()">
+          <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" class="form-control" id="nombre" [(ngModel)]="nuevoReactivo.nombre" name="nombre"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="categoria">Categoría</label>
+            <select class="form-control" id="categoria" [(ngModel)]="nuevoReactivo.categoria_id" name="categoria"
+              required>
+              <option *ngFor="let categoria of categorias" [value]="categoria.id">{{ categoria.nombre }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="cantidad_total">Cantidad Total</label>
+            <input type="number" class="form-control" id="cantidad_total" [(ngModel)]="nuevoReactivo.cantidad_total"
+              name="cantidad_total" required>
+          </div>
+          <div class="form-group">
+            <label for="unidad_medida">Unidad de Medida</label>
+            <input type="text" class="form-control" id="unidad_medida" [(ngModel)]="nuevoReactivo.unidad_medida"
+              name="unidad_medida" required>
+          </div>
+          <div class="form-group">
+            <label for="estado">Estado</label>
+            <select class="form-control" id="estado" [(ngModel)]="nuevoReactivo.estado" name="estado" required>
+              <option value="disponible">Disponible</option>
+              <option value="agotado">Agotado</option>
+              <option value="en_uso">En Uso</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Agregar Reactivo</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
-    <div class="reactivos-pagination">
-      <button *ngFor="let page of [1, 2, 3]" [class.active]="page === currentPage">
-        {{ page }}
-      </button>
+<!-- Modal para editar reactivo -->
+<div class="modal" [ngClass]="{'show': isEditModalOpen}" [ngStyle]="{'display': isEditModalOpen ? 'block' : 'none'}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Editar Reactivo</h5>
+        <button type="button" class="close" (click)="cerrarModalEdicion()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="actualizarReactivo()">
+          <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" class="form-control" id="nombre" [(ngModel)]="reactivoSeleccionado.nombre" name="nombre"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="categoria">Categoría</label>
+            <select class="form-control" id="categoria" [(ngModel)]="reactivoSeleccionado.categoria_id" name="categoria"
+              required>
+              <option *ngFor="let categoria of categorias" [value]="categoria.id">{{ categoria.nombre }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="cantidad_total">Cantidad Total</label>
+            <input type="number" class="form-control" id="cantidad_total"
+              [(ngModel)]="reactivoSeleccionado.cantidad_total" name="cantidad_total" required>
+          </div>
+          <div class="form-group">
+            <label for="unidad_medida">Unidad de Medida</label>
+            <input type="text" class="form-control" id="unidad_medida" [(ngModel)]="reactivoSeleccionado.unidad_medida"
+              name="unidad_medida" required>
+          </div>
+          <div class="form-group">
+            <label for="estado">Estado</label>
+            <select class="form-control" id="estado" [(ngModel)]="reactivoSeleccionado.estado" name="estado" required>
+              <option value="disponible">Disponible</option>
+              <option value="agotado">Agotado</option>
+              <option value="en_uso">En Uso</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Actualizar Reactivo</button>
+        </form>
+      </div>
     </div>
   </div>
 </div>
