@@ -27,7 +27,11 @@ export default class ListaComponent implements OnInit {
   isEditModalOpen: boolean = false;
   reactivoSeleccionado: IReactivo = {
     id: 0,
+    clave: '',
+    cas: '',
+    numero: '',
     nombre: '',
+    pureza: '',
     cantidad_total: 0,
     unidad_medida: '',
     categoria_id: 0,
@@ -36,7 +40,11 @@ export default class ListaComponent implements OnInit {
 
   nuevoReactivo: IReactivo = {
     id: 0,
+    clave: '',
+    cas: '',
+    numero: '',
     nombre: '',
+    pureza: '',
     cantidad_total: 0,
     unidad_medida: '',
     categoria_id: 0,
@@ -125,7 +133,11 @@ export default class ListaComponent implements OnInit {
         this.filteredReactivos = this.reactivos;
         this.nuevoReactivo = {
           id: 0,
+          clave: '',
+          cas: '',
+          numero: '',
           nombre: '',
+          pureza: '',
           cantidad_total: 0,
           unidad_medida: '',
           categoria_id: 0,

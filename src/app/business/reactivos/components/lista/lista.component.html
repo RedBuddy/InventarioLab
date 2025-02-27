@@ -41,7 +41,11 @@
     <table class="reactivos-table">
       <thead>
         <tr>
+          <th>Clave</th>
+          <th>CAS</th>
+          <th>Número</th>
           <th>Nombre</th>
+          <th>Pureza</th>
           <th>Categoría</th>
           <th>Stock</th>
           <th>Unidad de Medida</th>
@@ -52,7 +56,11 @@
 
       <tbody>
         <tr *ngFor="let reactivo of filteredReactivos">
+          <td>{{ reactivo.clave }}</td>
+          <td>{{ reactivo.cas }}</td>
+          <td>{{ reactivo.numero }}</td>
           <td>{{ reactivo.nombre }}</td>
+          <td>{{ reactivo.pureza }}%</td>
           <td>{{ getCategoriaNombre(reactivo.categoria_id) }}</td>
           <td [class]="getStockClass(reactivo.cantidad_total)">
             {{ reactivo.cantidad_total }}
@@ -86,9 +94,25 @@
       <div class="modal-body">
         <form (ngSubmit)="agregarReactivo()">
           <div class="form-group">
+            <label for="clave">Clave</label>
+            <input type="text" class="form-control" id="clave" [(ngModel)]="nuevoReactivo.clave" name="clave">
+          </div>
+          <div class="form-group">
+            <label for="cas">CAS</label>
+            <input type="text" class="form-control" id="cas" [(ngModel)]="nuevoReactivo.cas" name="cas">
+          </div>
+          <div class="form-group">
+            <label for="numero">Número</label>
+            <input type="text" class="form-control" id="numero" [(ngModel)]="nuevoReactivo.numero" name="numero">
+          </div>
+          <div class="form-group">
             <label for="nombre">Nombre</label>
             <input type="text" class="form-control" id="nombre" [(ngModel)]="nuevoReactivo.nombre" name="nombre"
               required>
+          </div>
+          <div class="form-group">
+            <label for="pureza">Pureza</label>
+            <input type="text" class="form-control" id="pureza" [(ngModel)]="nuevoReactivo.pureza" name="pureza">
           </div>
           <div class="form-group">
             <label for="categoria">Categoría</label>
@@ -106,11 +130,11 @@
             <label for="unidad_medida">Unidad de Medida</label>
             <select class="form-control" id="unidad_medida" [(ngModel)]="nuevoReactivo.unidad_medida"
               name="unidad_medida" required>
-              <option value="g">Gramos</option>
+              <option value="gramos">Gramos</option>
               <option value="mg">Miligramos</option>
-              <option value="frascos">Frascos</option>
-              <option value="l">Litros</option>
+              <option value="litros">Litros</option>
               <option value="ml">Mililitros</option>
+              <option value="frascos">Frascos</option>
             </select>
           </div>
           <div class="form-group">
@@ -141,9 +165,25 @@
       <div class="modal-body">
         <form (ngSubmit)="actualizarReactivo()">
           <div class="form-group">
+            <label for="clave">Clave</label>
+            <input type="text" class="form-control" id="clave" [(ngModel)]="reactivoSeleccionado.clave" name="clave">
+          </div>
+          <div class="form-group">
+            <label for="cas">CAS</label>
+            <input type="text" class="form-control" id="cas" [(ngModel)]="reactivoSeleccionado.cas" name="cas">
+          </div>
+          <div class="form-group">
+            <label for="numero">Número</label>
+            <input type="text" class="form-control" id="numero" [(ngModel)]="reactivoSeleccionado.numero" name="numero">
+          </div>
+          <div class="form-group">
             <label for="nombre">Nombre</label>
             <input type="text" class="form-control" id="nombre" [(ngModel)]="reactivoSeleccionado.nombre" name="nombre"
               required>
+          </div>
+          <div class="form-group">
+            <label for="pureza">Pureza</label>
+            <input type="text" class="form-control" id="pureza" [(ngModel)]="reactivoSeleccionado.pureza" name="pureza">
           </div>
           <div class="form-group">
             <label for="categoria">Categoría</label>
@@ -161,11 +201,11 @@
             <label for="unidad_medida">Unidad de Medida</label>
             <select class="form-control" id="unidad_medida" [(ngModel)]="reactivoSeleccionado.unidad_medida"
               name="unidad_medida" required>
-              <option value="g">Gramos</option>
+              <option value="gramos">Gramos</option>
               <option value="mg">Miligramos</option>
-              <option value="frascos">Frascos</option>
-              <option value="l">Litros</option>
+              <option value="litros">Litros</option>
               <option value="ml">Mililitros</option>
+              <option value="frascos">Frascos</option>
             </select>
           </div>
           <div class="form-group">
