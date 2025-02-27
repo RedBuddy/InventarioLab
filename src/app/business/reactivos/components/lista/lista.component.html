@@ -1,19 +1,15 @@
-<!-- reactivos.component.html -->
 <div class="reactivos-container">
-  <!-- Header Section -->
   <div class="reactivos-header">
     <h2>
       <i class="fas fa-flask icon"></i>
       Gestión de Reactivos
     </h2>
-
     <button class="reactivos-btn-primary" (click)="abrirModal()">
       <i class="fas fa-plus"></i>
       Nuevo Reactivo
     </button>
   </div>
 
-  <!-- Filters Section -->
   <div class="reactivos-filters">
     <div class="filter-group">
       <label for="searchReactivo">
@@ -36,7 +32,6 @@
     </div>
   </div>
 
-  <!-- Reactivos Table -->
   <div class="reactivos-table-container">
     <table class="reactivos-table">
       <thead>
@@ -53,18 +48,15 @@
           <th>Acciones</th>
         </tr>
       </thead>
-
       <tbody>
         <tr *ngFor="let reactivo of filteredReactivos">
           <td>{{ reactivo.clave }}</td>
           <td>{{ reactivo.cas }}</td>
           <td>{{ reactivo.numero }}</td>
           <td>{{ reactivo.nombre }}</td>
-          <td>{{ reactivo.pureza }}%</td>
+          <td>{{ reactivo.pureza }}</td>
           <td>{{ getCategoriaNombre(reactivo.categoria_id) }}</td>
-          <td [class]="getStockClass(reactivo.cantidad_total)">
-            {{ reactivo.cantidad_total }}
-          </td>
+          <td [class]="getStockClass(reactivo.cantidad_total)">{{ reactivo.cantidad_total }}</td>
           <td>{{ reactivo.unidad_medida }}</td>
           <td>{{ reactivo.estado }}</td>
           <td class="reactivos-actions">
@@ -73,6 +65,9 @@
             </button>
             <button class="reactivos-btn-icon danger" (click)="eliminarReactivo(reactivo.id)">
               <i class="fas fa-trash-alt"></i>
+            </button>
+            <button class="reactivos-btn-icon" (click)="abrirModalMovimiento(reactivo)">
+              <i class="fas fa-exchange-alt"></i>
             </button>
           </td>
         </tr>
@@ -163,7 +158,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form (ngSubmit)="actualizarReactivo()">
+        <form (ngSubmit)="actualizarReactivo(reactivoSeleccionado)">
           <div class="form-group">
             <label for="clave">Clave</label>
             <input type="text" class="form-control" id="clave" [(ngModel)]="reactivoSeleccionado.clave" name="clave">
@@ -217,6 +212,43 @@
             </select>
           </div>
           <button type="submit" class="btn btn-primary">Actualizar Reactivo</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para registrar movimiento -->
+<div class="modal" [ngClass]="{'show': isMovimientoModalOpen}"
+  [ngStyle]="{'display': isMovimientoModalOpen ? 'block' : 'none'}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Registrar Movimiento</h5>
+        <button type="button" class="close" (click)="cerrarModalMovimiento()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="registrarMovimiento()">
+          <div class="form-group">
+            <label for="tipo">Tipo de Movimiento</label>
+            <select class="form-control" id="tipo" [(ngModel)]="nuevoMovimiento.tipo" name="tipo" required>
+              <option value="entrada">Entrada</option>
+              <option value="salida">Salida</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="cantidad">Cantidad</label>
+            <input type="number" class="form-control" id="cantidad" [(ngModel)]="nuevoMovimiento.cantidad"
+              name="cantidad" required>
+          </div>
+          <div class="form-group">
+            <label for="unidad_medida">Unidad de Medida</label>
+            <input type="text" class="form-control" id="unidad_medida" [(ngModel)]="nuevoMovimiento.unidad_medida"
+              name="unidad_medida" readonly>
+          </div>
+          <button type="submit" class="btn btn-primary">Registrar Movimiento</button>
         </form>
       </div>
     </div>

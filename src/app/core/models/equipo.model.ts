@@ -1,6 +1,6 @@
 
 export interface IEquipo {
-  id?: number;
+  id: number;
   nombre: string;
   marca?: string;
   modelo?: string;

@@ -4,8 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IReactivo } from '../../../../core/models/reactivo.model';
 import { ICategoria } from '../../../../core/models/categoria.model';
+import { IMovimiento } from '../../../../core/models/movimiento.model';
 import { ReactivoService } from '../../../../core/services/reactivo.service';
 import { CategoriaService } from '../../../../core/services/categoria.service';
+import { MovimientosService } from '../../../../core/services/movimientos.service';
 
 @Component({
   selector: 'app-lista',
@@ -25,6 +27,7 @@ export default class ListaComponent implements OnInit {
   errorMessage: string | null = null;
   isModalOpen: boolean = false;
   isEditModalOpen: boolean = false;
+  isMovimientoModalOpen: boolean = false;
   reactivoSeleccionado: IReactivo = {
     id: 0,
     clave: '',
@@ -51,9 +54,20 @@ export default class ListaComponent implements OnInit {
     estado: 'disponible'
   };
 
+  nuevoMovimiento: IMovimiento = {
+    id: 0,
+    tipo: 'entrada',
+    reactivo_id: 0,
+    cantidad: 0,
+    unidad_medida: '',
+    fecha_movimiento: new Date(),
+    usuario_id: 1 // Asume un usuario con ID 1 para este ejemplo
+  };
+
   constructor(
     private reactivoService: ReactivoService,
     private categoriaService: CategoriaService,
+    private movimientosService: MovimientosService,
     private router: Router
   ) { }
 
@@ -126,6 +140,17 @@ export default class ListaComponent implements OnInit {
     this.isEditModalOpen = false;
   }
 
+  abrirModalMovimiento(reactivo: IReactivo): void {
+    this.reactivoSeleccionado = { ...reactivo };
+    this.nuevoMovimiento.reactivo_id = reactivo.id;
+    this.nuevoMovimiento.unidad_medida = reactivo.unidad_medida; // Asignar la unidad de medida del reactivo
+    this.isMovimientoModalOpen = true;
+  }
+
+  cerrarModalMovimiento(): void {
+    this.isMovimientoModalOpen = false;
+  }
+
   agregarReactivo(): void {
     this.reactivoService.createReactivo(this.nuevoReactivo).subscribe({
       next: (reactivo: IReactivo) => {
@@ -152,23 +177,45 @@ export default class ListaComponent implements OnInit {
     });
   }
 
-  actualizarReactivo(): void {
-    if (this.reactivoSeleccionado) {
-      this.reactivoService.updateReactivo(this.reactivoSeleccionado.id, this.reactivoSeleccionado).subscribe({
-        next: (reactivo: IReactivo) => {
-          const index = this.reactivos.findIndex(r => r.id === reactivo.id);
-          if (index !== -1) {
-            this.reactivos[index] = reactivo;
-            this.filteredReactivos = this.reactivos;
-          }
-          this.errorMessage = null;
-          this.cerrarModalEdicion();
-        },
-        error: (err) => {
-          this.errorMessage = err.message;
+  actualizarReactivo(reactivo: IReactivo): void {
+    this.reactivoService.updateReactivo(reactivo.id, reactivo).subscribe({
+      next: (updatedReactivo: IReactivo) => {
+        const index = this.reactivos.findIndex(r => r.id === updatedReactivo.id);
+        if (index !== -1) {
+          this.reactivos[index] = updatedReactivo;
+          this.filteredReactivos = this.reactivos;
         }
-      });
-    }
+        this.errorMessage = null;
+        this.cerrarModalEdicion();
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+      }
+    });
+  }
+
+  registrarMovimiento(): void {
+    this.movimientosService.createMovimiento(this.nuevoMovimiento).subscribe({
+      next: (movimiento: IMovimiento) => {
+        // Actualizar el stock del reactivo
+        const reactivo = this.reactivos.find(r => r.id === movimiento.reactivo_id);
+        if (reactivo) {
+          const cantidadTotal = parseFloat(reactivo.cantidad_total.toString());
+          const cantidadMovimiento = parseFloat(movimiento.cantidad.toString());
+          if (movimiento.tipo === 'entrada') {
+            reactivo.cantidad_total = parseFloat((cantidadTotal + cantidadMovimiento).toFixed(2));
+          } else if (movimiento.tipo === 'salida') {
+            reactivo.cantidad_total = parseFloat((cantidadTotal - cantidadMovimiento).toFixed(2));
+          }
+          this.actualizarReactivo(reactivo); // Actualizar el reactivo en el backend
+        }
+        this.errorMessage = null;
+        this.cerrarModalMovimiento();
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+      }
+    });
   }
 
   eliminarReactivo(id: number): void {

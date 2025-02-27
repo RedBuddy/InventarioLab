@@ -1,28 +1,23 @@
-<!-- equipos.component.html -->
 <div class="equipos-container">
-  <!-- Header Section -->
   <div class="equipos-header">
     <h2>
       <i class="fas fa-microscope icon"></i>
       Gestión de Equipos
     </h2>
-
-    <div class="equipos-actions">
-      <button class="equipos-btn-primary">
-        <i class="fas fa-plus"></i>
-        Nuevo Equipo
-      </button>
-    </div>
+    <button class="equipos-btn-primary" (click)="abrirModal()">
+      <i class="fas fa-plus"></i>
+      Nuevo Equipo
+    </button>
   </div>
 
-  <!-- Filters Section -->
   <div class="equipos-filters">
     <div class="filter-group">
       <label for="searchEquipo">
         <i class="fas fa-search"></i>
         Buscar Equipo
       </label>
-      <input type="text" id="searchEquipo" placeholder="Nombre, tipo o ubicación..." [(ngModel)]="searchText">
+      <input type="text" id="searchEquipo" placeholder="Nombre o ubicación..." [(ngModel)]="searchText"
+        (input)="filtrarEquipos()">
     </div>
 
     <div class="filter-group">
@@ -30,61 +25,54 @@
         <i class="fas fa-info-circle"></i>
         Estado
       </label>
-      <select id="equipoStatus" [(ngModel)]="selectedStatus">
+      <select id="equipoStatus" [(ngModel)]="selectedStatus" (change)="filtrarEquipos()">
         <option value="">Todos</option>
         <option value="activo">Activo</option>
         <option value="mantenimiento">En Mantenimiento</option>
         <option value="inactivo">Inactivo</option>
       </select>
     </div>
-
-    <button class="equipos-btn-secondary">
-      <i class="fas fa-filter"></i>
-      Aplicar Filtros
-    </button>
   </div>
 
-  <!-- Equipos Table -->
   <div class="equipos-table-container">
     <table class="equipos-table">
       <thead>
         <tr>
           <th>Nombre</th>
-          <th>Tipo</th>
+          <th>Marca</th>
+          <th>Modelo</th>
+          <th>Número de Serie</th>
+          <th>Alimentación</th>
+          <th>Amperaje</th>
+          <th>Frecuencia</th>
+          <th>Potencia</th>
+          <th>Proyecto</th>
           <th>Ubicación</th>
           <th>Estado</th>
           <th>Última Calibración</th>
           <th>Acciones</th>
         </tr>
       </thead>
-
       <tbody>
-        <tr *ngFor="let equipo of filteredEquipos">
+        <tr *ngFor="let equipo of paginatedEquipos">
           <td>{{ equipo.nombre }}</td>
-          <td>
-            <span class="equipo-type" [class]="equipo.tipo">
-              {{ equipo.tipo }}
-            </span>
-          </td>
+          <td>{{ equipo.marca }}</td>
+          <td>{{ equipo.modelo }}</td>
+          <td>{{ equipo.numero_serie }}</td>
+          <td>{{ equipo.alimentacion }}</td>
+          <td>{{ equipo.amperaje }}</td>
+          <td>{{ equipo.frecuencia }}</td>
+          <td>{{ equipo.potencia }}</td>
+          <td>{{ equipo.proyecto }}</td>
           <td>{{ equipo.ubicacion }}</td>
-          <td>
-            <span class="equipo-status" [class]="equipo.estado">
-              <i class="fas fa-circle"></i>
-              {{ equipo.estado | titlecase }}
-            </span>
-          </td>
-          <td [class]="getCalibrationClass(equipo.ultimaCalibracion)">
-            {{ equipo.ultimaCalibracion | date: 'dd/MM/yyyy' }}
-          </td>
+          <td>{{ equipo.estado }}</td>
+          <td>{{ getUltimaCalibracion(equipo.id) }}</td>
           <td class="equipos-actions">
-            <button class="equipos-btn-icon">
+            <button class="equipos-btn-icon" (click)="abrirModalEdicion(equipo)">
               <i class="fas fa-edit"></i>
             </button>
-            <button class="equipos-btn-icon danger">
+            <button class="equipos-btn-icon danger" (click)="eliminarEquipo(equipo.id)">
               <i class="fas fa-trash-alt"></i>
-            </button>
-            <button class="equipos-btn-icon info">
-              <i class="fas fa-info-circle"></i>
             </button>
           </td>
         </tr>
@@ -92,17 +80,155 @@
     </table>
   </div>
 
-  <!-- Table Footer -->
-  <div class="equipos-footer">
-    <button class="equipos-btn-export">
-      <i class="fas fa-file-export"></i>
-      Exportar Reporte
+  <!-- <div class="pagination">
+    <button *ngFor="let page of [1, 2, 3]" [class.active]="page === currentPage" (click)="cambiarPagina(page)">
+      {{ page }}
     </button>
+  </div> -->
+</div>
 
-    <div class="equipos-pagination">
-      <button *ngFor="let page of [1, 2, 3]" [class.active]="page === currentPage">
-        {{ page }}
-      </button>
+<!-- Modal para agregar equipo -->
+<div class="modal" [ngClass]="{'show': isModalOpen}" [ngStyle]="{'display': isModalOpen ? 'block' : 'none'}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nuevo Equipo</h5>
+        <button type="button" class="close" (click)="cerrarModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="agregarEquipo()">
+          <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" class="form-control" id="nombre" [(ngModel)]="nuevoEquipo.nombre" name="nombre" required>
+          </div>
+          <div class="form-group">
+            <label for="marca">Marca</label>
+            <input type="text" class="form-control" id="marca" [(ngModel)]="nuevoEquipo.marca" name="marca">
+          </div>
+          <div class="form-group">
+            <label for="modelo">Modelo</label>
+            <input type="text" class="form-control" id="modelo" [(ngModel)]="nuevoEquipo.modelo" name="modelo">
+          </div>
+          <div class="form-group">
+            <label for="numero_serie">Número de Serie</label>
+            <input type="text" class="form-control" id="numero_serie" [(ngModel)]="nuevoEquipo.numero_serie"
+              name="numero_serie">
+          </div>
+          <div class="form-group">
+            <label for="alimentacion">Alimentación</label>
+            <input type="text" class="form-control" id="alimentacion" [(ngModel)]="nuevoEquipo.alimentacion"
+              name="alimentacion">
+          </div>
+          <div class="form-group">
+            <label for="amperaje">Amperaje</label>
+            <input type="text" class="form-control" id="amperaje" [(ngModel)]="nuevoEquipo.amperaje" name="amperaje">
+          </div>
+          <div class="form-group">
+            <label for="frecuencia">Frecuencia</label>
+            <input type="text" class="form-control" id="frecuencia" [(ngModel)]="nuevoEquipo.frecuencia"
+              name="frecuencia">
+          </div>
+          <div class="form-group">
+            <label for="potencia">Potencia</label>
+            <input type="text" class="form-control" id="potencia" [(ngModel)]="nuevoEquipo.potencia" name="potencia">
+          </div>
+          <div class="form-group">
+            <label for="proyecto">Proyecto</label>
+            <input type="text" class="form-control" id="proyecto" [(ngModel)]="nuevoEquipo.proyecto" name="proyecto">
+          </div>
+          <div class="form-group">
+            <label for="ubicacion">Ubicación</label>
+            <input type="text" class="form-control" id="ubicacion" [(ngModel)]="nuevoEquipo.ubicacion" name="ubicacion"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="estado">Estado</label>
+            <select class="form-control" id="estado" [(ngModel)]="nuevoEquipo.estado" name="estado" required>
+              <option value="activo">Activo</option>
+              <option value="mantenimiento">En Mantenimiento</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Agregar Equipo</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para editar equipo -->
+<div class="modal" [ngClass]="{'show': isEditModalOpen}" [ngStyle]="{'display': isEditModalOpen ? 'block' : 'none'}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Editar Equipo</h5>
+        <button type="button" class="close" (click)="cerrarModalEdicion()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="actualizarEquipo()">
+          <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" class="form-control" id="nombre" [(ngModel)]="equipoSeleccionado.nombre" name="nombre"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="marca">Marca</label>
+            <input type="text" class="form-control" id="marca" [(ngModel)]="equipoSeleccionado.marca" name="marca">
+          </div>
+          <div class="form-group">
+            <label for="modelo">Modelo</label>
+            <input type="text" class="form-control" id="modelo" [(ngModel)]="equipoSeleccionado.modelo" name="modelo">
+          </div>
+          <div class="form-group">
+            <label for="numero_serie">Número de Serie</label>
+            <input type="text" class="form-control" id="numero_serie" [(ngModel)]="equipoSeleccionado.numero_serie"
+              name="numero_serie">
+          </div>
+          <div class="form-group">
+            <label for="alimentacion">Alimentación</label>
+            <input type="text" class="form-control" id="alimentacion" [(ngModel)]="equipoSeleccionado.alimentacion"
+              name="alimentacion">
+          </div>
+          <div class="form-group">
+            <label for="amperaje">Amperaje</label>
+            <input type="text" class="form-control" id="amperaje" [(ngModel)]="equipoSeleccionado.amperaje"
+              name="amperaje">
+          </div>
+          <div class="form-group">
+            <label for="frecuencia">Frecuencia</label>
+            <input type="text" class="form-control" id="frecuencia" [(ngModel)]="equipoSeleccionado.frecuencia"
+              name="frecuencia">
+          </div>
+          <div class="form-group">
+            <label for="potencia">Potencia</label>
+            <input type="text" class="form-control" id="potencia" [(ngModel)]="equipoSeleccionado.potencia"
+              name="potencia">
+          </div>
+          <div class="form-group">
+            <label for="proyecto">Proyecto</label>
+            <input type="text" class="form-control" id="proyecto" [(ngModel)]="equipoSeleccionado.proyecto"
+              name="proyecto">
+          </div>
+          <div class="form-group">
+            <label for="ubicacion">Ubicación</label>
+            <input type="text" class="form-control" id="ubicacion" [(ngModel)]="equipoSeleccionado.ubicacion"
+              name="ubicacion" required>
+          </div>
+          <div class="form-group">
+            <label for="estado">Estado</label>
+            <select class="form-control" id="estado" [(ngModel)]="equipoSeleccionado.estado" name="estado" required>
+              <option value="activo">Activo</option>
+              <option value="mantenimiento">En Mantenimiento</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Actualizar Equipo</button>
+        </form>
+      </div>
     </div>
   </div>
 </div>
