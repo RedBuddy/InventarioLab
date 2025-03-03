@@ -3,7 +3,7 @@ export interface IUsuario {
   id?: number;
   nombre: string;
   email: string;
-  contraseña: string;
+  contrasena: string;
   rol: 'admin' | 'mod' | 'usuario';
   imagen?: {
     type: string;

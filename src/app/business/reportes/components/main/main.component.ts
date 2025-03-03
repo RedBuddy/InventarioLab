@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Chart, ChartConfiguration } from 'chart.js';
+import { Router } from '@angular/router';
+import { ReporteService } from '../../../../core/services/reporte.service';
+
 
 @Component({
   selector: 'app-main',
@@ -11,58 +13,34 @@ import { Chart, ChartConfiguration } from 'chart.js';
   styleUrl: './main.component.scss'
 })
 
-export default class MainComponent {
-
-  @ViewChild('reportChart') chartRef: any;
-  chart: any;
+export default class MainComponent implements OnInit {
 
   selectedReportType = 'stock';
-  startDate = '';
-  endDate = '';
+  fechaInicio = '';
+  fechaFin = '';
+  reportData: any[] = [];
+  reportHeaders: string[] = [];
+  errorMessage: string | null = null;
 
-  reports = [
-    { title: 'Reporte de Stock Enero 2024', date: '2024-01-31' },
-    { title: 'Movimientos Diciembre 2023', date: '2023-12-31' },
-    { title: 'Caducidades 2024', date: '2024-01-15' }
-  ];
+  constructor(
+    private reporteService: ReporteService,
+    private router: Router
+  ) { }
 
-  ngAfterViewInit() {
-    this.initChart();
+  ngOnInit(): void {
   }
 
-  initChart() {
-    const config: ChartConfiguration = {
-      type: 'bar',
-      data: {
-        labels: ['Reactivos', 'Equipos', 'Consumibles'],
-        datasets: [{
-          label: 'Cantidad',
-          data: [120, 45, 78],
-          backgroundColor: [
-            'rgba(52, 152, 219, 0.8)',
-            'rgba(46, 204, 113, 0.8)',
-            'rgba(241, 196, 15, 0.8)'
-          ],
-          borderColor: [
-            'rgba(52, 152, 219, 1)',
-            'rgba(46, 204, 113, 1)',
-            'rgba(241, 196, 15, 1)'
-          ],
-          borderWidth: 1
-        }]
+  generarReporte(): void {
+    this.reporteService.generarReporte(this.selectedReportType, this.fechaInicio, this.fechaFin).subscribe({
+      next: (data: any) => {
+        this.reportData = data;
+        this.reportHeaders = data.length > 0 ? Object.keys(data[0]) : [];
+        this.errorMessage = null;
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
+      error: (err) => {
+        this.errorMessage = err.message;
       }
-    };
-
-    this.chart = new Chart(this.chartRef.nativeElement, config);
+    });
   }
 
 }

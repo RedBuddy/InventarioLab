@@ -27,6 +27,7 @@ export default class ListaComponent implements OnInit {
   errorMessage: string | null = null;
   isModalOpen: boolean = false;
   isEditModalOpen: boolean = false;
+  isMantenimientoModalOpen: boolean = false;
   equipoSeleccionado: IEquipo = {
     id: 0,
     nombre: '',
@@ -63,6 +64,14 @@ export default class ListaComponent implements OnInit {
       data: []
     },
     estado: 'activo'
+  };
+
+  nuevoMantenimiento: IMantenimiento = {
+    id: 0,
+    equipo_id: 0,
+    fecha_mantenimiento: new Date(),
+    descripcion: '',
+    tecnico: ''
   };
 
   constructor(
@@ -151,6 +160,16 @@ export default class ListaComponent implements OnInit {
     this.isEditModalOpen = false;
   }
 
+  abrirModalMantenimiento(equipo: IEquipo): void {
+    this.equipoSeleccionado = { ...equipo };
+    this.nuevoMantenimiento.equipo_id = equipo.id;
+    this.isMantenimientoModalOpen = true;
+  }
+
+  cerrarModalMantenimiento(): void {
+    this.isMantenimientoModalOpen = false;
+  }
+
   agregarEquipo(): void {
     this.equipoService.createEquipo(this.nuevoEquipo).subscribe({
       next: (equipo: IEquipo) => {
@@ -202,6 +221,19 @@ export default class ListaComponent implements OnInit {
         }
       });
     }
+  }
+
+  registrarMantenimiento(): void {
+    this.mantenimientoService.createMantenimiento(this.nuevoMantenimiento).subscribe({
+      next: (mantenimiento: IMantenimiento) => {
+        this.mantenimientos.push(mantenimiento);
+        this.errorMessage = null;
+        this.cerrarModalMantenimiento();
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+      }
+    });
   }
 
   eliminarEquipo(id: number): void {

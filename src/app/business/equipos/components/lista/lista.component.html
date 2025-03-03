@@ -74,17 +74,14 @@
             <button class="equipos-btn-icon danger" (click)="eliminarEquipo(equipo.id)">
               <i class="fas fa-trash-alt"></i>
             </button>
+            <button class="equipos-btn-icon" (click)="abrirModalMantenimiento(equipo)">
+              <i class="fas fa-tools"></i>
+            </button>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
-
-  <!-- <div class="pagination">
-    <button *ngFor="let page of [1, 2, 3]" [class.active]="page === currentPage" (click)="cambiarPagina(page)">
-      {{ page }}
-    </button>
-  </div> -->
 </div>
 
 <!-- Modal para agregar equipo -->
@@ -227,6 +224,41 @@
             </select>
           </div>
           <button type="submit" class="btn btn-primary">Actualizar Equipo</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para registrar mantenimiento -->
+<div class="modal" [ngClass]="{'show': isMantenimientoModalOpen}"
+  [ngStyle]="{'display': isMantenimientoModalOpen ? 'block' : 'none'}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Registrar Mantenimiento</h5>
+        <button type="button" class="close" (click)="cerrarModalMantenimiento()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="registrarMantenimiento()">
+          <div class="form-group">
+            <label for="fecha_mantenimiento">Fecha de Mantenimiento</label>
+            <input type="date" class="form-control" id="fecha_mantenimiento"
+              [(ngModel)]="nuevoMantenimiento.fecha_mantenimiento" name="fecha_mantenimiento" required>
+          </div>
+          <div class="form-group">
+            <label for="descripcion">Descripción</label>
+            <textarea class="form-control" id="descripcion" [(ngModel)]="nuevoMantenimiento.descripcion"
+              name="descripcion" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="tecnico">Técnico</label>
+            <input type="text" class="form-control" id="tecnico" [(ngModel)]="nuevoMantenimiento.tecnico" name="tecnico"
+              required>
+          </div>
+          <button type="submit" class="btn btn-primary">Registrar Mantenimiento</button>
         </form>
       </div>
     </div>

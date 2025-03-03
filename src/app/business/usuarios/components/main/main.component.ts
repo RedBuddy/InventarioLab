@@ -1,6 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { IUsuario } from '../../../../core/models/usuario.model';
+import { UsuarioService } from '../../../../core/services/usuario.service';
+
 
 @Component({
   selector: 'app-main',
@@ -9,77 +13,136 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss'
 })
-export default class MainComponent {
+export default class MainComponent implements OnInit {
 
   searchText = '';
   selectedRole = '';
-  showModal = false;
-  editingUser = false;
-  currentUser: any = {
-    name: '',
+  usuarios: IUsuario[] = [];
+  filteredUsuarios: IUsuario[] = [];
+  errorMessage: string | null = null;
+  isModalOpen: boolean = false;
+  isEditModalOpen: boolean = false;
+  usuarioSeleccionado: IUsuario = {
+    id: 0,
+    nombre: '',
     email: '',
-    role: 'viewer',
-    status: 'active'
+    contrasena: '',
+    rol: 'usuario',
+    activo: true
   };
 
-  users = [
-    {
-      name: 'Juan Pérez',
-      email: 'juan.perez@lab.com',
-      role: 'admin',
-      status: 'active',
-      lastAccess: '2024-05-20T14:30:00'
-    },
-    {
-      name: 'María Gómez',
-      email: 'maria.gomez@lab.com',
-      role: 'editor',
-      status: 'active',
-      lastAccess: '2024-05-19T10:15:00'
-    },
-    {
-      name: 'Carlos Ruiz',
-      email: 'carlos.ruiz@lab.com',
-      role: 'viewer',
-      status: 'inactive',
-      lastAccess: '2024-05-15T08:45:00'
-    }
-  ];
+  nuevoUsuario: IUsuario = {
+    id: 0,
+    nombre: '',
+    email: '',
+    contrasena: '',
+    rol: 'usuario',
+    activo: true
+  };
 
-  get filteredUsers() {
-    return this.users.filter(user => {
-      const matchesSearch = user.name.toLowerCase().includes(this.searchText.toLowerCase()) ||
-        user.email.toLowerCase().includes(this.searchText.toLowerCase()) ||
-        user.role.toLowerCase().includes(this.searchText.toLowerCase());
+  constructor(
+    private usuarioService: UsuarioService,
+    private router: Router
+  ) { }
 
-      const matchesRole = this.selectedRole ? user.role === this.selectedRole : true;
+  ngOnInit(): void {
+    this.cargarUsuarios();
+  }
+
+  cargarUsuarios(): void {
+    this.usuarioService.getUsuarios().subscribe({
+      next: (data: IUsuario[]) => {
+        this.usuarios = data;
+        this.filteredUsuarios = data;
+        this.errorMessage = null;
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+      }
+    });
+  }
+
+  filtrarUsuarios(): void {
+    this.filteredUsuarios = this.usuarios.filter(usuario => {
+      const matchesSearch = usuario.nombre.toLowerCase().includes(this.searchText.toLowerCase()) ||
+        usuario.email.toLowerCase().includes(this.searchText.toLowerCase());
+
+      const matchesRole = this.selectedRole ? usuario.rol === this.selectedRole : true;
 
       return matchesSearch && matchesRole;
     });
   }
 
-  getRoleClass(role: string): string {
-    return role.toLowerCase();
+  abrirModal(): void {
+    this.isModalOpen = true;
   }
 
-  openModal(user?: any) {
-    if (user) {
-      this.currentUser = { ...user };
-      this.editingUser = true;
-    } else {
-      this.currentUser = {
-        name: '',
-        email: '',
-        role: 'viewer',
-        status: 'active'
-      };
-      this.editingUser = false;
+  cerrarModal(): void {
+    this.isModalOpen = false;
+  }
+
+  abrirModalEdicion(usuario: IUsuario): void {
+    this.usuarioSeleccionado = { ...usuario };
+    this.isEditModalOpen = true;
+  }
+
+  cerrarModalEdicion(): void {
+    this.isEditModalOpen = false;
+  }
+
+  agregarUsuario(): void {
+    this.usuarioService.createUsuario(this.nuevoUsuario).subscribe({
+      next: (usuario: IUsuario) => {
+        this.usuarios.push(usuario);
+        this.filteredUsuarios = this.usuarios;
+        this.nuevoUsuario = {
+          id: 0,
+          nombre: '',
+          email: '',
+          contrasena: '',
+          rol: 'usuario',
+          activo: true
+        };
+        this.errorMessage = null;
+        this.cerrarModal();
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+      }
+    });
+  }
+
+  actualizarUsuario(): void {
+    if (this.usuarioSeleccionado) {
+      this.usuarioService.updateUsuario(this.usuarioSeleccionado.id!, this.usuarioSeleccionado).subscribe({
+        next: (usuario: IUsuario) => {
+          const index = this.usuarios.findIndex(u => u.id === usuario.id);
+          if (index !== -1) {
+            this.usuarios[index] = usuario;
+            this.filteredUsuarios = this.usuarios;
+          }
+          this.errorMessage = null;
+          this.cerrarModalEdicion();
+        },
+        error: (err) => {
+          this.errorMessage = err.message;
+        }
+      });
     }
-    this.showModal = true;
   }
 
-  closeModal() {
-    this.showModal = false;
+  eliminarUsuario(id: number): void {
+    if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
+      this.usuarioService.deleteUsuario(id).subscribe({
+        next: () => {
+          this.cargarUsuarios();
+          this.errorMessage = null;
+        },
+        error: (err) => {
+          this.errorMessage = err.message;
+        }
+      });
+    }
   }
 
 }
