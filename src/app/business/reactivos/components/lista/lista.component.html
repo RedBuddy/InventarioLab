@@ -58,17 +58,23 @@
           <td>{{ getCategoriaNombre(reactivo.categoria_id) }}</td>
           <td [class]="getStockClass(reactivo.cantidad_total)">{{ reactivo.cantidad_total }}</td>
           <td>{{ reactivo.unidad_medida }}</td>
-          <td>{{ reactivo.estado }}</td>
-          <td class="reactivos-actions">
-            <button class="reactivos-btn-icon" (click)="abrirModalEdicion(reactivo)">
-              <i class="fas fa-edit"></i>
-            </button>
-            <button class="reactivos-btn-icon danger" (click)="eliminarReactivo(reactivo.id)">
-              <i class="fas fa-trash-alt"></i>
-            </button>
-            <button class="reactivos-btn-icon" (click)="abrirModalMovimiento(reactivo)">
-              <i class="fas fa-exchange-alt"></i>
-            </button>
+          <td [ngClass]="{
+          'estado-disponible': reactivo.estado === 'disponible',
+          'estado-agotado': reactivo.estado === 'agotado',
+          'estado-en-uso': reactivo.estado === 'en_uso'
+        }">{{ capitalizeFirstLetter(reactivo.estado) }}</td>
+          <td>
+            <div class="reactivos-actions">
+              <button class="reactivos-btn-icon info" (click)="abrirModalEdicion(reactivo)">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="reactivos-btn-icon danger" (click)="eliminarReactivo(reactivo.id)">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+              <button class="reactivos-btn-icon warning" (click)="abrirModalMovimiento(reactivo)">
+                <i class="fas fa-exchange-alt"></i>
+              </button>
+            </div>
           </td>
         </tr>
       </tbody>

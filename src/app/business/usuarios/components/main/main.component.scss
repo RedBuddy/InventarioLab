@@ -1,21 +1,18 @@
-// usuarios.component.scss
-.usuarios-container {
-  // Variables locales
-  $primary: #2c3e50;
-  $accent: #3498db;
-  $success: #27ae60;
-  $warning: #f1c40f;
-  $danger: #e74c3c;
-  $border: #bdc3c7;
-  $text-muted: #7f8c8d;
+$primary: #2c3e50;
+$accent: #3498db;
+$success: #27ae60;
+$warning: #f1c40f;
+$danger: #e74c3c;
+$border: #bdc3c7;
+$text-muted: #7f8c8d;
 
+.usuarios-container {
   margin: 2rem;
   padding: 2rem;
   background: #fff;
   border-radius: 0.3rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   font-family: "Segoe UI", system-ui;
-  position: relative;
 
   .usuarios-header {
     display: flex;
@@ -101,24 +98,6 @@
         }
       }
     }
-
-    .usuarios-btn-secondary {
-      align-self: flex-end;
-      background: $accent;
-      color: white;
-      padding: 0.8rem 1.8rem;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      transition: background 0.2s;
-
-      &:hover {
-        background: darken($accent, 8%);
-      }
-    }
   }
 
   .usuarios-table-container {
@@ -150,66 +129,17 @@
       border-bottom: 1px solid $border;
     }
 
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-
-      .user-avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: $accent;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 500;
-      }
+    .activo {
+      color: $success;
+      font-weight: 600;
     }
 
-    .user-role {
-      padding: 0.3rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 500;
-
-      &.admin {
-        background: rgba($danger, 0.1);
-        color: $danger;
-      }
-
-      &.editor {
-        background: rgba($warning, 0.1);
-        color: darken($warning, 15%);
-      }
-
-      &.viewer {
-        background: rgba($success, 0.1);
-        color: $success;
-      }
+    .inactivo {
+      color: $danger;
+      font-weight: 600;
     }
 
-    .user-status {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.9rem;
-
-      i {
-        font-size: 0.6rem;
-      }
-
-      &.active {
-        color: $success;
-      }
-
-      &.inactive {
-        color: $danger;
-      }
-    }
-
-    .user-actions {
+    .usuarios-actions {
       display: flex;
       gap: 0.8rem;
 
@@ -249,113 +179,6 @@
     }
   }
 
-  .user-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-
-    .modal-content {
-      background: white;
-      border-radius: 8px;
-      width: 500px;
-      max-width: 95%;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-
-      .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1.5rem;
-        border-bottom: 1px solid $border;
-
-        h3 {
-          margin: 0;
-          color: $primary;
-        }
-
-        .modal-close {
-          background: none;
-          border: none;
-          cursor: pointer;
-          color: $text-muted;
-          font-size: 1.2rem;
-          transition: color 0.2s;
-
-          &:hover {
-            color: $danger;
-          }
-        }
-      }
-
-      .modal-body {
-        padding: 1.5rem;
-
-        .form-group {
-          margin-bottom: 1.5rem;
-
-          label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: $primary;
-            font-weight: 500;
-          }
-
-          input,
-          select {
-            width: 100%;
-            padding: 0.7rem;
-            border: 1px solid $border;
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: 0.95rem;
-            transition: border-color 0.2s;
-
-            &:focus {
-              outline: none;
-              border-color: $accent;
-            }
-          }
-
-          .status-toggle {
-            display: flex;
-            gap: 0.5rem;
-
-            button {
-              flex: 1;
-              padding: 0.7rem;
-              border: 1px solid $border;
-              border-radius: 6px;
-              background: white;
-              cursor: pointer;
-              transition: all 0.2s;
-
-              &.active {
-                background: $accent;
-                color: white;
-                border-color: $accent;
-              }
-            }
-          }
-        }
-      }
-
-      .modal-footer {
-        padding: 1.5rem;
-        border-top: 1px solid $border;
-        display: flex;
-        justify-content: flex-end;
-        gap: 1rem;
-      }
-    }
-  }
-
   @media (max-width: 768px) {
     padding: 1.2rem;
 
@@ -363,15 +186,115 @@
       grid-template-columns: 1fr;
     }
 
-    .usuarios-table {
-      th,
-      td {
-        padding: 0.8rem;
+    .usuarios-table-container {
+      overflow-x: auto;
+    }
+  }
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  &.show {
+    opacity: 1;
+  }
+
+  .modal-dialog {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .modal-header {
+    background: #f5f5f5;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+
+    .modal-title {
+      margin: 0;
+      font-size: 1.25rem;
+      color: #333;
+    }
+
+    .close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #aaa;
+
+      &:hover {
+        color: #333;
+      }
+    }
+  }
+
+  .modal-body {
+    padding: 1rem;
+
+    .form-group {
+      margin-bottom: 0.5rem;
+
+      label {
+        display: block;
+        // margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #333;
       }
 
-      .user-actions {
-        flex-direction: column;
-        gap: 0.5rem;
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+        color: #333;
+        transition: border-color 0.2s;
+
+        &:focus {
+          border-color: #007bff;
+          outline: none;
+        }
+      }
+    }
+
+    .btn {
+      width: 100%;
+      margin-top: 1rem;
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &.btn-primary {
+        background: #007bff;
+        color: white;
+
+        &:hover {
+          background: #0056b3;
+        }
       }
     }
   }

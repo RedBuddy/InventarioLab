@@ -56,14 +56,19 @@
           <td>{{ usuario.nombre }}</td>
           <td>{{ usuario.email }}</td>
           <td>{{ usuario.rol }}</td>
-          <td>{{ usuario.activo ? 'Sí' : 'No' }}</td>
-          <td class="usuarios-actions">
-            <button class="usuarios-btn-icon" (click)="abrirModalEdicion(usuario)">
-              <i class="fas fa-edit"></i>
-            </button>
-            <button class="usuarios-btn-icon danger" (click)="eliminarUsuario(usuario.id!)">
-              <i class="fas fa-trash-alt"></i>
-            </button>
+          <td [ngClass]="{'activo': usuario.activo, 'inactivo': !usuario.activo}">
+            {{ usuario.activo ? 'Sí' : 'No' }}
+          </td>
+          <td>
+            <div class="usuarios-actions">
+              <button class="usuarios-btn-icon info" (click)="abrirModalEdicion(usuario)">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="usuarios-btn-icon danger" (click)="eliminarUsuario(usuario.id)">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+
           </td>
         </tr>
       </tbody>
@@ -93,7 +98,7 @@
             <input type="email" class="form-control" id="email" [(ngModel)]="nuevoUsuario.email" name="email" required>
           </div>
           <div class="form-group">
-            <label for="contrasena">contraseña</label>
+            <label for="contrasena">Contraseña</label>
             <input type="password" class="form-control" id="contrasena" [(ngModel)]="nuevoUsuario.contrasena"
               name="contrasena" required>
           </div>
@@ -142,7 +147,7 @@
               required>
           </div>
           <div class="form-group">
-            <label for="contrasena">contraseña</label>
+            <label for="contrasena">Contraseña</label>
             <input type="password" class="form-control" id="contrasena" [(ngModel)]="usuarioSeleccionado.contrasena"
               name="contrasena" required>
           </div>

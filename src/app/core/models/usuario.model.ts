@@ -1,6 +1,6 @@
 
 export interface IUsuario {
-  id?: number;
+  id: number;
   nombre: string;
   email: string;
   contrasena: string;
