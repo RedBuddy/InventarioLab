@@ -24,7 +24,6 @@
       <select id="reportType" [(ngModel)]="selectedReportType">
         <option value="stock">Stock Actual</option>
         <option value="movimientos">Movimientos</option>
-        <!-- <option value="caducidad">Caducidad</option> -->
         <option value="consumo">Consumo</option>
       </select>
     </div>
@@ -37,8 +36,7 @@
       <input type="date" id="fechaInicio" [(ngModel)]="fechaInicio">
     </div>
 
-    <div class="filter-group"
-      *ngIf="selectedReportType === 'movimientos' || selectedReportType === 'consumo' || selectedReportType === 'caducidad'">
+    <div class="filter-group" *ngIf="selectedReportType === 'movimientos' || selectedReportType === 'consumo'">
       <label for="fechaFin">
         <i class="fas fa-calendar-alt"></i>
         Fecha Fin
