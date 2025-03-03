@@ -31,7 +31,7 @@ export default class MainComponent implements OnInit {
   }
 
   generarReporte(): void {
-    this.reporteService.generarReporte(this.selectedReportType, this.fechaInicio, this.fechaFin).subscribe({
+    this.reporteService.generarReporte(this.selectedReportType, this.fechaInicio, this.fechaFin, 1).subscribe({
       next: (data: any) => {
         this.reportData = data;
         this.reportHeaders = data.length > 0 ? Object.keys(data[0]) : [];
