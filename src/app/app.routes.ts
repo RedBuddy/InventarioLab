@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
-  // {
-  //   path: '',
-  //   loadComponent: () => import('./business/authentication/login/login.component'),
-  //   //canActivate: [authGuard]
-  // },
+  {
+    path: 'login',
+    loadComponent: () => import('./business/authentication/login/login.component'),
+    //canActivate: [authGuard]
+  },
   {
     path: '',
     loadComponent: () => import('./shared/components/layout/layout.component'),
@@ -13,7 +13,7 @@ export const routes: Routes = [
       {
         path: 'inicio',
         loadComponent: () => import('./business/inicio/inicio.component'),
-        //canActivate: [authGuard]
+        canActivate: [authGuard]
       },
       {
         path: 'reactivos',
