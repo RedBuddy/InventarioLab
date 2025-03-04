@@ -1,14 +1,14 @@
+// Variables locales
+$primary: #2c3e50;
+$accent: #3498db;
+$success: #27ae60;
+$warning: #f1c40f;
+$danger: #e74c3c;
+$border: #bdc3c7;
+$text-muted: #7f8c8d;
+
 // reactivos.component.scss
 .reactivos-container {
-  // Variables locales
-  $primary: #2c3e50;
-  $accent: #3498db;
-  $success: #27ae60;
-  $warning: #f1c40f;
-  $danger: #e74c3c;
-  $border: #bdc3c7;
-  $text-muted: #7f8c8d;
-
   margin: 2rem;
   padding: 2rem;
   background: #fff;
@@ -276,30 +276,6 @@
         background: darken($success, 8%);
       }
     }
-
-    .reactivos-pagination {
-      display: flex;
-      gap: 0.6rem;
-
-      button {
-        padding: 0.6rem 1.2rem;
-        border: 1px solid $border;
-        border-radius: 6px;
-        background: white;
-        cursor: pointer;
-        transition: all 0.2s;
-
-        &:hover:not(.active) {
-          background: lighten($border, 10%);
-        }
-
-        &.active {
-          background: $primary;
-          color: white;
-          border-color: $primary;
-        }
-      }
-    }
   }
 
   @media (max-width: 768px) {
@@ -426,5 +402,37 @@
         }
       }
     }
+  }
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 1rem 3rem 1rem;
+  gap: 0.5rem;
+
+  button {
+    padding: 0.5rem 1rem;
+    border: 1px solid $border;
+    border-radius: 4px;
+    background: $primary;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: darken($primary, 10%);
+    }
+
+    &:disabled {
+      background: $border;
+      cursor: not-allowed;
+    }
+  }
+
+  span {
+    font-size: 1rem;
+    color: $primary;
   }
 }

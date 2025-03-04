@@ -1,1 +1,80 @@
-<p>categorias works!</p>
+<!-- categorias.component.html -->
+<div class="categorias-container">
+  <!-- Header Section -->
+  <div class="categorias-header">
+    <h2>
+      <i class="fas fa-tags icon"></i>
+      Gestión de Categorías
+    </h2>
+
+    <div class="categorias-actions">
+      <button class="categorias-btn-primary" (click)="openModal()">
+        <i class="fas fa-plus"></i>
+        Nueva Categoría
+      </button>
+    </div>
+  </div>
+
+  <!-- Categories Table -->
+  <div class="categorias-table-container">
+    <table class="categorias-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let categoria of categorias">
+          <td>{{ categoria.nombre }}</td>
+          <td>{{ categoria.descripcion || 'Sin descripción' }}</td>
+          <td>
+            <div class="categorias-actions">
+              <button class="categorias-btn-icon info" (click)="openModal(categoria)">
+                <i class="fas fa-edit"></i>
+              </button>
+              <!-- <button class="categorias-btn-icon danger" (click)="deleteCategoria(categoria.id)">
+                <i class="fas fa-trash-alt"></i>
+              </button> -->
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" [ngClass]="{'show': showModal}" [ngStyle]="{'display': showModal ? 'block' : 'none'}">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ editingCategoria ? 'Editar Categoría' : 'Nueva Categoría' }}</h5>
+          <button type="button" class="close" (click)="closeModal()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="saveCategoria()">
+            <div class="form-group">
+              <label for="nombre">Nombre</label>
+              <input type="text" class="form-control" id="nombre" [(ngModel)]="currentCategoria.nombre" name="nombre"
+                required>
+            </div>
+            <div class="form-group">
+              <label for="descripcion">Descripción</label>
+              <textarea class="form-control" id="descripcion" [(ngModel)]="currentCategoria.descripcion"
+                name="descripcion"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">{{ editingCategoria ? 'Actualizar' : 'Guardar' }}</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+</div>

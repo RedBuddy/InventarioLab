@@ -13,12 +13,13 @@
       <!-- <li><a routerLink="stock" routerLinkActive="active-link"><i class="fas fa-boxes"></i> Stock</a></li> -->
       <li><a routerLink="reportes" routerLinkActive="active-link"><i class="fas fa-chart-line"></i> Reportes</a></li>
       <li><a routerLink="usuarios" routerLinkActive="active-link"><i class="fas fa-users"></i> Usuarios</a></li>
+      <li><a routerLink="categorias" routerLinkActive="active-link"><i class="fas fa-tags"></i> Categorías</a></li>
     </ul>
   </nav>
   <footer>
     <div class="botones">
       <a class="config" href="/configuracion"><i class="fas fa-cog"></i> Configuración</a>
-      <a class="logout" href="/logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+      <a class="logout" (click)="logout()"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
     </div>
   </footer>
 </aside>

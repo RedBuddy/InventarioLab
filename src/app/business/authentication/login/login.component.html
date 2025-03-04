@@ -13,7 +13,7 @@
       </div>
       <form (ngSubmit)="login()">
         <div class="form-group">
-          <input [(ngModel)]="identifier" name="identifier" type="text" placeholder="Usuario o email" required>
+          <input [(ngModel)]="identifier" name="identifier" type="text" placeholder="Email" required>
         </div>
         <div class="form-group">
           <input [(ngModel)]="password" name="password" [type]="showPassword() ? 'text' : 'password'"
@@ -37,6 +37,9 @@
           </div>
         </div>
         <button type="submit">Acceder</button>
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
       </form>
     </div>
   </div>

@@ -16,7 +16,6 @@ import { MovimientosService } from '../../../../core/services/movimientos.servic
   templateUrl: './lista.component.html',
   styleUrls: ['./lista.component.scss']
 })
-
 export default class ListaComponent implements OnInit {
 
   reactivos: IReactivo[] = [];
@@ -64,6 +63,10 @@ export default class ListaComponent implements OnInit {
     usuario_id: 1 // Asume un usuario con ID 1 para este ejemplo
   };
 
+  // Paginación
+  currentPage: number = 1;
+  itemsPerPage: number = 6;
+
   constructor(
     private reactivoService: ReactivoService,
     private categoriaService: CategoriaService,
@@ -106,6 +109,7 @@ export default class ListaComponent implements OnInit {
       return (this.searchText === '' || reactivo.nombre.toLowerCase().includes(this.searchText.toLowerCase())) &&
         (this.selectedCategory === '' || reactivo.categoria_id === +this.selectedCategory);
     });
+    this.currentPage = 1; // Resetear a la primera página después de filtrar
   }
 
   getCategoriaNombre(categoria_id: number): string {
@@ -236,4 +240,25 @@ export default class ListaComponent implements OnInit {
     return text.charAt(0).toUpperCase() + text.slice(1);
   }
 
+  // Métodos de paginación
+  get paginatedReactivos(): IReactivo[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredReactivos.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.filteredReactivos.length / this.itemsPerPage);
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  prevPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
 }

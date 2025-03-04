@@ -1,4 +1,8 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
+import { authenticatedGuard } from './core/guards/authenticated.guard';
+import { roleGuard } from './core/guards/role.guard';
+
 
 export const routes: Routes = [
   {
@@ -18,26 +22,26 @@ export const routes: Routes = [
       {
         path: 'reactivos',
         loadComponent: () => import('./business/reactivos/components/lista/lista.component'),
-        //canActivate: [authGuard]
+        canActivate: [authGuard]
       },
       {
         path: 'equipos',
         loadComponent: () => import('./business/equipos/components/lista/lista.component'),
         //canActivate: [authGuard]
       },
-      // {
-      //   path: 'stock',
-      //   loadComponent: () => import('./business/stock/components/main/main.component'),
-      //   //canActivate: [authGuard]
-      // },
       {
         path: 'reportes',
         loadComponent: () => import('./business/reportes/components/main/main.component'),
-        //canActivate: [authGuard]
+        canActivate: [authGuard]
       },
       {
         path: 'usuarios',
         loadComponent: () => import('./business/usuarios/components/main/main.component'),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'categorias',
+        loadComponent: () => import('./business/categorias/categorias.component'),
         //canActivate: [authGuard]
       },
       {
@@ -50,6 +54,6 @@ export const routes: Routes = [
 
   {
     path: '**',
-    redirectTo: 'home'
+    redirectTo: 'inicio'
   }
 ];

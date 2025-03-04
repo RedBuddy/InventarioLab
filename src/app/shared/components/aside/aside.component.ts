@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-aside',
@@ -10,4 +11,9 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class AsideComponent {
 
+  constructor(private authService: AuthService) { }
+
+  logout() {
+    this.authService.logout();
+  }
 }

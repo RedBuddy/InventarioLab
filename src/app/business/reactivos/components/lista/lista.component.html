@@ -49,7 +49,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let reactivo of filteredReactivos">
+        <tr *ngFor="let reactivo of paginatedReactivos">
           <td>{{ reactivo.clave }}</td>
           <td>{{ reactivo.cas }}</td>
           <td>{{ reactivo.numero }}</td>
@@ -80,6 +80,13 @@
       </tbody>
     </table>
   </div>
+</div>
+
+<!-- Pagination Controls -->
+<div class="pagination-controls">
+  <button (click)="prevPage()" [disabled]="currentPage === 1">Anterior</button>
+  <span>Página {{ currentPage }} de {{ totalPages }}</span>
+  <button (click)="nextPage()" [disabled]="currentPage === totalPages">Siguiente</button>
 </div>
 
 <!-- Modal para agregar reactivo -->
