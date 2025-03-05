@@ -22,6 +22,11 @@ export default class MainComponent implements OnInit {
   errorMessage: string | null = null;
   isModalOpen: boolean = false;
   isEditModalOpen: boolean = false;
+
+  // Paginación
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+
   usuarioSeleccionado: IUsuario = {
     id: 0,
     nombre: '',
@@ -71,6 +76,7 @@ export default class MainComponent implements OnInit {
 
       return matchesSearch && matchesRole;
     });
+    this.currentPage = 1; // Resetear a la primera página después de filtrar
   }
 
   abrirModal(): void {
@@ -142,6 +148,28 @@ export default class MainComponent implements OnInit {
           this.errorMessage = err.message;
         }
       });
+    }
+  }
+
+  // Métodos de paginación
+  get paginatedUsuarios(): IUsuario[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.usuarios.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.usuarios.length / this.itemsPerPage);
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  prevPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
     }
   }
 

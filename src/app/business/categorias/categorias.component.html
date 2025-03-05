@@ -27,7 +27,7 @@
       </thead>
 
       <tbody>
-        <tr *ngFor="let categoria of categorias">
+        <tr *ngFor="let categoria of paginatedCategorias">
           <td>{{ categoria.nombre }}</td>
           <td>{{ categoria.descripcion || 'Sin descripción' }}</td>
           <td>
@@ -43,6 +43,13 @@
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <!-- Pagination Controls -->
+  <div class="pagination-controls">
+    <button (click)="prevPage()" [disabled]="currentPage === 1">Anterior</button>
+    <span>Página {{ currentPage }} de {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages">Siguiente</button>
   </div>
 
   <!-- Modal -->

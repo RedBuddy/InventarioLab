@@ -19,10 +19,9 @@ export default class ListaComponent implements OnInit {
   searchText = '';
   selectedStatus = '';
   currentPage = 1;
-  itemsPerPage = 10;
+  itemsPerPage = 5;
   equipos: IEquipo[] = [];
   filteredEquipos: IEquipo[] = [];
-  paginatedEquipos: IEquipo[] = [];
   mantenimientos: IMantenimiento[] = [];
   errorMessage: string | null = null;
   isModalOpen: boolean = false;
@@ -90,7 +89,6 @@ export default class ListaComponent implements OnInit {
       next: (data: IEquipo[]) => {
         this.equipos = data;
         this.filteredEquipos = data;
-        this.paginarEquipos();
         this.errorMessage = null;
       },
       error: (err) => {
@@ -120,27 +118,7 @@ export default class ListaComponent implements OnInit {
 
       return matchesSearch && matchesStatus;
     });
-    this.paginarEquipos();
-  }
-
-  paginarEquipos(): void {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    this.paginatedEquipos = this.filteredEquipos.slice(startIndex, endIndex);
-  }
-
-  cambiarPagina(page: number): void {
-    this.currentPage = page;
-    this.paginarEquipos();
-  }
-
-  getUltimaCalibracion(equipoId: number): string {
-    const mantenimientos = this.mantenimientos.filter(m => m.equipo_id === equipoId);
-    if (mantenimientos.length === 0) return 'N/A';
-    const ultimaCalibracion = mantenimientos.reduce((latest, current) => {
-      return new Date(latest.fecha_mantenimiento) > new Date(current.fecha_mantenimiento) ? latest : current;
-    });
-    return new Date(ultimaCalibracion.fecha_mantenimiento).toLocaleDateString();
+    this.currentPage = 1; // Resetear a la primera página después de filtrar
   }
 
   abrirModal(): void {
@@ -175,7 +153,6 @@ export default class ListaComponent implements OnInit {
       next: (equipo: IEquipo) => {
         this.equipos.push(equipo);
         this.filteredEquipos = this.equipos;
-        this.paginarEquipos();
         this.nuevoEquipo = {
           id: 0,
           nombre: '',
@@ -211,7 +188,6 @@ export default class ListaComponent implements OnInit {
           if (index !== -1) {
             this.equipos[index] = equipo;
             this.filteredEquipos = this.equipos;
-            this.paginarEquipos();
           }
           this.errorMessage = null;
           this.cerrarModalEdicion();
@@ -250,9 +226,38 @@ export default class ListaComponent implements OnInit {
     }
   }
 
+  getUltimaCalibracion(equipoId: number): string {
+    const mantenimientos = this.mantenimientos.filter(m => m.equipo_id === equipoId);
+    if (mantenimientos.length === 0) return 'N/A';
+    const ultimaCalibracion = mantenimientos.reduce((latest, current) => {
+      return new Date(latest.fecha_mantenimiento) > new Date(current.fecha_mantenimiento) ? latest : current;
+    });
+    return new Date(ultimaCalibracion.fecha_mantenimiento).toLocaleDateString();
+  }
+
   capitalizeFirstLetter(text: string): string {
     return text.charAt(0).toUpperCase() + text.slice(1);
   }
 
+  // Métodos de paginación
+  get paginatedEquipos(): IEquipo[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredEquipos.slice(startIndex, startIndex + this.itemsPerPage);
+  }
 
+  get totalPages(): number {
+    return Math.ceil(this.filteredEquipos.length / this.itemsPerPage);
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  prevPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
 }

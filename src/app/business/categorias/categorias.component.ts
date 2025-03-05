@@ -19,6 +19,10 @@ export default class CategoriasComponent implements OnInit {
   currentCategoria: ICategoria = { id: 0, nombre: '', descripcion: '' };
   errorMessage: string | null = null;
 
+  // Paginación
+  currentPage: number = 1;
+  itemsPerPage: number = 5;
+
   constructor(private categoriaService: CategoriaService) { }
 
   ngOnInit(): void {
@@ -89,4 +93,25 @@ export default class CategoriasComponent implements OnInit {
     }
   }
 
+  // Métodos de paginación
+  get paginatedCategorias(): ICategoria[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.categorias.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.categorias.length / this.itemsPerPage);
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  prevPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
 }

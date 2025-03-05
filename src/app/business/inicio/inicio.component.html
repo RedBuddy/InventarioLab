@@ -15,7 +15,7 @@
         <tr *ngFor="let articulo of articulosStockBajo">
           <td>{{ articulo.nombre }}</td>
           <td>{{ articulo.categoria }}</td>
-          <td [class]="getStockClass(articulo.cantidad)">{{ articulo.cantidad }}</td>
+          <td [class]="getStockClass(articulo.cantidad_total)">{{ articulo.cantidad_total }}</td>
         </tr>
       </tbody>
     </table>
@@ -24,11 +24,11 @@
   <!-- Dashboard Widgets -->
   <div class="dashboard-widgets">
     <!-- Summary Cards -->
-    <!-- <div class="cards-container">
+    <div class="cards-container">
       <section class="card summary-card">
         <h3><i class="fas fa-flask"></i> Resumen de reactivos</h3>
         <div class="summary-content">
-          <span class="summary-number">{{ resumenReactivos.total }}</span>
+          <span class="summary-number">{{ totalReactivos }}</span>
           <span class="summary-label">Reactivos</span>
         </div>
       </section>
@@ -36,11 +36,11 @@
       <section class="card summary-card">
         <h3><i class="fas fa-cogs"></i> Resumen de equipos</h3>
         <div class="summary-content">
-          <span class="summary-number">{{ resumenEquipos.total }}</span>
+          <span class="summary-number">{{ totalEquipos }}</span>
           <span class="summary-label">Equipos</span>
         </div>
       </section>
-    </div> -->
+    </div>
 
     <!-- Recent Movements -->
     <section class="card">
@@ -85,16 +85,6 @@
         </tbody>
       </table>
     </section>
-
-    <!-- Alerts and Notifications -->
-    <!-- <section class="card">
-      <h3><i class="fas fa-bell"></i> Alertas y Notificaciones</h3>
-      <ul class="alerts-list">
-        <li *ngFor="let alerta of alertas">
-          <i class="fas fa-exclamation-circle"></i> {{ alerta.mensaje }}
-        </li>
-      </ul>
-    </section> -->
 
     <!-- Reports Card -->
     <section class="card">

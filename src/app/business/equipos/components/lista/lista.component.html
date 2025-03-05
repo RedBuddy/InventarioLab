@@ -48,12 +48,13 @@
           <th>Potencia</th>
           <th>Proyecto</th>
           <th>Ubicación</th>
+          <th>Última Calibración</th>
           <th>Estado</th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let equipo of filteredEquipos">
+        <tr *ngFor="let equipo of paginatedEquipos">
           <td>{{ equipo.nombre }}</td>
           <td>{{ equipo.marca }}</td>
           <td>{{ equipo.modelo }}</td>
@@ -64,6 +65,7 @@
           <td>{{ equipo.potencia }}</td>
           <td>{{ equipo.proyecto }}</td>
           <td>{{ equipo.ubicacion }}</td>
+          <td>{{ getUltimaCalibracion(equipo.id) }}</td>
           <td [ngClass]="{
             'estado-activo': equipo.estado === 'activo',
             'estado-mantenimiento': equipo.estado === 'mantenimiento',
@@ -85,6 +87,13 @@
         </tr>
       </tbody>
     </table>
+
+    <!-- Pagination Controls -->
+    <div class="pagination-controls">
+      <button (click)="prevPage()" [disabled]="currentPage === 1">Anterior</button>
+      <span>Página {{ currentPage }} de {{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="currentPage === totalPages">Siguiente</button>
+    </div>
   </div>
 
   <!-- Modal para agregar equipo -->

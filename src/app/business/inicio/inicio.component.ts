@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReactivoService } from '../../core/services/reactivo.service';
 import { EquipoService } from '../../core/services/equipo.service';
@@ -8,13 +7,12 @@ import { MovimientosService } from '../../core/services/movimientos.service';
 import { MantenimientoService } from '../../core/services/mantenimiento.service';
 import { ReporteService } from '../../core/services/reporte.service';
 
-
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   templateUrl: './inicio.component.html',
-  styleUrl: './inicio.component.scss'
+  styleUrls: ['./inicio.component.scss']
 })
 export default class InicioComponent implements OnInit {
 
@@ -38,9 +36,9 @@ export default class InicioComponent implements OnInit {
   ngOnInit(): void {
     this.cargarReactivos();
     this.cargarEquipos();
-    // this.cargarArticulosStockBajo();
-    // this.cargarMovimientosRecientes();
-    // this.cargarProximosMantenimientos();
+    this.cargarArticulosStockBajo();
+    this.cargarMovimientosRecientes();
+    this.cargarProximosMantenimientos();
     this.cargarReportesGenerados();
   }
 
@@ -68,41 +66,41 @@ export default class InicioComponent implements OnInit {
     });
   }
 
-  // cargarArticulosStockBajo(): void {
-  //   this.reactivoService.getReactivosStockBajo().subscribe({
-  //     next: (data) => {
-  //       this.articulosStockBajo = data;
-  //       this.errorMessage = null;
-  //     },
-  //     error: (err) => {
-  //       this.errorMessage = err.message;
-  //     }
-  //   });
-  // }
+  cargarArticulosStockBajo(): void {
+    this.reactivoService.getReactivos().subscribe({
+      next: (data) => {
+        this.articulosStockBajo = data.filter(reactivo => reactivo.cantidad_total <= 10);
+        this.errorMessage = null;
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+      }
+    });
+  }
 
-  // cargarMovimientosRecientes(): void {
-  //   this.movimientosService.getMovimientosRecientes().subscribe({
-  //     next: (data) => {
-  //       this.movimientosRecientes = data;
-  //       this.errorMessage = null;
-  //     },
-  //     error: (err) => {
-  //       this.errorMessage = err.message;
-  //     }
-  //   });
-  // }
+  cargarMovimientosRecientes(): void {
+    this.movimientosService.getMovimientos().subscribe({
+      next: (data) => {
+        this.movimientosRecientes = data.slice(0, 5); // Mostrar los 5 movimientos más recientes
+        this.errorMessage = null;
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+      }
+    });
+  }
 
-  // cargarProximosMantenimientos(): void {
-  //   this.mantenimientoService.getProximosMantenimientos().subscribe({
-  //     next: (data) => {
-  //       this.proximosMantenimientos = data;
-  //       this.errorMessage = null;
-  //     },
-  //     error: (err) => {
-  //       this.errorMessage = err.message;
-  //     }
-  //   });
-  // }
+  cargarProximosMantenimientos(): void {
+    this.mantenimientoService.getMantenimientos().subscribe({
+      next: (data) => {
+        this.proximosMantenimientos = data.filter(mantenimiento => new Date(mantenimiento.fecha_mantenimiento) >= new Date()).slice(0, 5); // Mostrar los 5 mantenimientos más próximos
+        this.errorMessage = null;
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+      }
+    });
+  }
 
   cargarReportesGenerados(): void {
     this.reporteService.getReportesGenerados().subscribe({
@@ -125,5 +123,4 @@ export default class InicioComponent implements OnInit {
       return 'stock-normal';
     }
   }
-
 }

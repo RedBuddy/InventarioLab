@@ -80,14 +80,16 @@
       </tbody>
     </table>
   </div>
+
+  <!-- Pagination Controls -->
+  <div class="pagination-controls">
+    <button (click)="prevPage()" [disabled]="currentPage === 1">Anterior</button>
+    <span>Página {{ currentPage }} de {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages">Siguiente</button>
+  </div>
 </div>
 
-<!-- Pagination Controls -->
-<div class="pagination-controls">
-  <button (click)="prevPage()" [disabled]="currentPage === 1">Anterior</button>
-  <span>Página {{ currentPage }} de {{ totalPages }}</span>
-  <button (click)="nextPage()" [disabled]="currentPage === totalPages">Siguiente</button>
-</div>
+
 
 <!-- Modal para agregar reactivo -->
 <div class="modal" [ngClass]="{'show': isModalOpen}" [ngStyle]="{'display': isModalOpen ? 'block' : 'none'}">
