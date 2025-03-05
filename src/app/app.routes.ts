@@ -27,7 +27,7 @@ export const routes: Routes = [
       {
         path: 'equipos',
         loadComponent: () => import('./business/equipos/components/lista/lista.component'),
-        //canActivate: [authGuard]
+        canActivate: [authGuard]
       },
       {
         path: 'reportes',
@@ -42,7 +42,12 @@ export const routes: Routes = [
       {
         path: 'categorias',
         loadComponent: () => import('./business/categorias/categorias.component'),
-        //canActivate: [authGuard]
+        canActivate: [authGuard]
+      },
+      {
+        path: 'configuracion/:id',
+        loadComponent: () => import('./business/config/config.component'),
+        canActivate: [authGuard]
       },
       {
         path: '',
