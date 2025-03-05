@@ -5,6 +5,6 @@ export interface IMovimiento {
   reactivo_id: number;
   cantidad: number;
   unidad_medida: string;
-  fecha_movimiento?: Date;
+  fecha_movimiento: Date;
   usuario_id: number;
 }

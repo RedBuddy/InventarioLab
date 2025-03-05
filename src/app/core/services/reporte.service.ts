@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { IReporteGenerado } from '../models/reporte_generado.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +20,8 @@ export class ReporteService {
     );
   }
 
-  getReportesGenerados(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/generados`).pipe(
+  getReportesGenerados(): Observable<IReporteGenerado[]> {
+    return this.http.get<IReporteGenerado[]>(`${this.apiUrl}/generados`).pipe(
       catchError(this.handleError)
     );
   }

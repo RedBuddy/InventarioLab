@@ -56,7 +56,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let movimiento of movimientosRecientes">
-            <td>{{ movimiento.fecha | date }}</td>
+            <td>{{ movimiento.fecha_movimiento | date }}</td>
             <td>{{ movimiento.tipo }}</td>
             <td>{{ movimiento.articulo }}</td>
             <td>{{ movimiento.cantidad }}</td>
@@ -66,7 +66,7 @@
     </section>
 
     <!-- Upcoming Maintenances -->
-    <section class="card">
+    <!-- <section class="card">
       <h3><i class="fas fa-tools"></i> Próximos Mantenimientos</h3>
       <table class="data-table">
         <thead>
@@ -79,12 +79,12 @@
         <tbody>
           <tr *ngFor="let mantenimiento of proximosMantenimientos">
             <td>{{ mantenimiento.equipo }}</td>
-            <td>{{ mantenimiento.fecha | date }}</td>
+            <td>{{ mantenimiento.fecha_mantenimiento | date }}</td>
             <td>{{ mantenimiento.tecnico }}</td>
           </tr>
         </tbody>
       </table>
-    </section>
+    </section> -->
 
     <!-- Reports Card -->
     <section class="card">
@@ -92,8 +92,8 @@
       <table class="reports-table">
         <tbody>
           <tr *ngFor="let reporte of reportesGenerados">
-            <td>{{ reporte.nombre }}</td>
-            <td class="report-date">{{ reporte.fecha | date }}</td>
+            <td>{{ reporte.tipo }}</td>
+            <td class="report-date">{{ reporte.fechaGeneracion | date }}</td>
           </tr>
         </tbody>
       </table>

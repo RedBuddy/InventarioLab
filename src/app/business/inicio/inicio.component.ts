@@ -6,6 +6,7 @@ import { EquipoService } from '../../core/services/equipo.service';
 import { MovimientosService } from '../../core/services/movimientos.service';
 import { MantenimientoService } from '../../core/services/mantenimiento.service';
 import { ReporteService } from '../../core/services/reporte.service';
+import { IReporteGenerado } from '../../core/models/reporte_generado.model';
 
 @Component({
   selector: 'app-inicio',
@@ -20,8 +21,8 @@ export default class InicioComponent implements OnInit {
   totalEquipos: number = 0;
   articulosStockBajo: any[] = [];
   movimientosRecientes: any[] = [];
-  proximosMantenimientos: any[] = [];
-  reportesGenerados: any[] = [];
+  // proximosMantenimientos: any[] = [];
+  reportesGenerados: IReporteGenerado[] = [];
   errorMessage: string | null = null;
 
   constructor(
@@ -38,7 +39,7 @@ export default class InicioComponent implements OnInit {
     this.cargarEquipos();
     this.cargarArticulosStockBajo();
     this.cargarMovimientosRecientes();
-    this.cargarProximosMantenimientos();
+    // this.cargarProximosMantenimientos();
     this.cargarReportesGenerados();
   }
 
@@ -69,7 +70,10 @@ export default class InicioComponent implements OnInit {
   cargarArticulosStockBajo(): void {
     this.reactivoService.getReactivos().subscribe({
       next: (data) => {
-        this.articulosStockBajo = data.filter(reactivo => reactivo.cantidad_total <= 10);
+        this.articulosStockBajo = data
+          .filter(reactivo => reactivo.cantidad_total <= 10)
+          .sort((a, b) => a.cantidad_total - b.cantidad_total)
+          .slice(0, 5); // Mostrar los 5 reactivos con stock más bajo
         this.errorMessage = null;
       },
       error: (err) => {
@@ -81,7 +85,9 @@ export default class InicioComponent implements OnInit {
   cargarMovimientosRecientes(): void {
     this.movimientosService.getMovimientos().subscribe({
       next: (data) => {
-        this.movimientosRecientes = data.slice(0, 5); // Mostrar los 5 movimientos más recientes
+        this.movimientosRecientes = data
+          .sort((a, b) => new Date(b.fecha_movimiento).getTime() - new Date(a.fecha_movimiento).getTime())
+          .slice(0, 5); // Mostrar los 5 movimientos más recientes
         this.errorMessage = null;
       },
       error: (err) => {
@@ -90,22 +96,27 @@ export default class InicioComponent implements OnInit {
     });
   }
 
-  cargarProximosMantenimientos(): void {
-    this.mantenimientoService.getMantenimientos().subscribe({
-      next: (data) => {
-        this.proximosMantenimientos = data.filter(mantenimiento => new Date(mantenimiento.fecha_mantenimiento) >= new Date()).slice(0, 5); // Mostrar los 5 mantenimientos más próximos
-        this.errorMessage = null;
-      },
-      error: (err) => {
-        this.errorMessage = err.message;
-      }
-    });
-  }
+  // cargarProximosMantenimientos(): void {
+  //   this.mantenimientoService.getMantenimientos().subscribe({
+  //     next: (data) => {
+  //       this.proximosMantenimientos = data
+  //         .filter(mantenimiento => new Date(mantenimiento.fecha_mantenimiento) >= new Date())
+  //         .sort((a, b) => new Date(a.fecha_mantenimiento).getTime() - new Date(b.fecha_mantenimiento).getTime())
+  //         .slice(0, 5); // Mostrar los 5 mantenimientos más próximos
+  //       this.errorMessage = null;
+  //     },
+  //     error: (err) => {
+  //       this.errorMessage = err.message;
+  //     }
+  //   });
+  // }
 
   cargarReportesGenerados(): void {
     this.reporteService.getReportesGenerados().subscribe({
-      next: (data) => {
-        this.reportesGenerados = data;
+      next: (data: IReporteGenerado[]) => {
+        this.reportesGenerados = data
+          .sort((a, b) => new Date(b.fechaGeneracion).getTime() - new Date(a.fechaGeneracion).getTime())
+          .slice(0, 5); // Mostrar los 5 reportes más recientes
         this.errorMessage = null;
       },
       error: (err) => {
