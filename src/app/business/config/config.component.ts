@@ -1,55 +1,50 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { IUsuario } from '../../core/models/usuario.model';
-import { UsuarioService } from '../../core/services/usuario.service';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
+import { UsuarioService } from '../../core/services/usuario.service';
+import { IUsuario } from '../../core/models/usuario.model';
+
 
 @Component({
   selector: 'app-config',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './config.component.html',
   styleUrl: './config.component.scss'
 })
 export default class ConfigComponent implements OnInit {
-  usuarioForm!: FormGroup;
-  usuarioId!: number;
+
+  usuario: IUsuario = { id: 0, nombre: '', email: '', contrasena: '', rol: 'usuario', activo: true };
+  contrasenaActual: string = '';
+  nuevaContrasena: string = '';
+  confirmarContrasena: string = '';
+  imagenPerfil: File | null = null;
   errorMessage: string | null = null;
+  successMessage: string | null = null;
 
   constructor(
-    private usuarioService: UsuarioService,
-    private route: ActivatedRoute
+    private authService: AuthService,
+    private usuarioService: UsuarioService
   ) { }
 
   ngOnInit(): void {
-    this.usuarioId = +this.route.snapshot.paramMap.get('id')!;
-    this.inicializarFormulario();
     this.cargarUsuario();
   }
 
-  inicializarFormulario(): void {
-    this.usuarioForm = new FormGroup({
-      nombre: new FormControl('', Validators.required),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      contrasena: new FormControl('', Validators.required),
-      rol: new FormControl('', Validators.required),
-      activo: new FormControl(false),
-      imagen: new FormControl(null)
-    });
-  }
-
   cargarUsuario(): void {
-    this.usuarioService.getUsuario(this.usuarioId).subscribe({
-      next: (usuario: IUsuario) => {
-        this.usuarioForm.patchValue({
-          nombre: usuario.nombre,
-          email: usuario.email,
-          contrasena: usuario.contrasena,
-          rol: usuario.rol,
-          activo: usuario.activo
-        });
+    const usuarioId = this.authService.getUserIdFromToken();
+
+    if (!usuarioId) {
+      this.authService.logout();
+      return;
+    }
+
+    this.usuarioService.getUsuario(usuarioId).subscribe({
+      next: (data: IUsuario) => {
+        this.usuario = data;
+        this.errorMessage = null;
       },
       error: (err) => {
         this.errorMessage = err.message;
@@ -57,35 +52,66 @@ export default class ConfigComponent implements OnInit {
     });
   }
 
-  onFileChange(event: any): void {
+  actualizarPerfil(): void {
+    this.usuarioService.updateUsuario(this.usuario.id, this.usuario).subscribe({
+      next: () => {
+        this.successMessage = 'Perfil actualizado correctamente';
+        this.errorMessage = null;
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+        this.successMessage = null;
+      }
+    });
+  }
+
+  cambiarContrasena(): void {
+    if (this.nuevaContrasena !== this.confirmarContrasena) {
+      this.errorMessage = 'Las contraseñas no coinciden';
+      return;
+    }
+
+    this.usuarioService.cambiarContrasena(this.usuario.id, this.contrasenaActual, this.nuevaContrasena).subscribe({
+      next: () => {
+        this.successMessage = 'Contraseña actualizada correctamente';
+        this.errorMessage = null;
+        this.contrasenaActual = '';
+        this.nuevaContrasena = '';
+        this.confirmarContrasena = '';
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+        this.successMessage = null;
+      }
+    });
+  }
+
+  seleccionarImagenPerfil(event: any): void {
     const file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        const binaryString = e.target.result;
-        const base64String = btoa(binaryString);
-        this.usuarioForm.patchValue({
-          imagen: {
-            type: file.type,
-            data: Array.from(atob(base64String), c => c.charCodeAt(0))
-          }
-        });
-      };
-      reader.readAsBinaryString(file);
+      this.imagenPerfil = file;
     }
   }
 
-  onSubmit(): void {
-    if (this.usuarioForm.valid) {
-      const usuario: IUsuario = this.usuarioForm.value;
-      this.usuarioService.updateUsuario(this.usuarioId, usuario).subscribe({
+  actualizarImagenPerfil(): void {
+    if (this.imagenPerfil) {
+      const formData = new FormData();
+      formData.append('imagen', this.imagenPerfil);
+
+      this.usuarioService.actualizarImagenPerfil(this.usuario.id, formData).subscribe({
         next: () => {
-          console.log('Usuario actualizado con éxito');
+          this.successMessage = 'Imagen de perfil actualizada correctamente';
+          this.errorMessage = null;
+          this.cargarUsuario(); // Recargar los datos del usuario para actualizar la imagen
         },
         error: (err) => {
           this.errorMessage = err.message;
+          this.successMessage = null;
         }
       });
+    } else {
+      this.errorMessage = 'Por favor, selecciona una imagen';
     }
   }
+
 }

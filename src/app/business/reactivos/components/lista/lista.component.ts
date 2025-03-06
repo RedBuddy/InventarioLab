@@ -8,6 +8,7 @@ import { IMovimiento } from '../../../../core/models/movimiento.model';
 import { ReactivoService } from '../../../../core/services/reactivo.service';
 import { CategoriaService } from '../../../../core/services/categoria.service';
 import { MovimientosService } from '../../../../core/services/movimientos.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-lista',
@@ -54,13 +55,12 @@ export default class ListaComponent implements OnInit {
   };
 
   nuevoMovimiento: IMovimiento = {
-    id: 0,
     tipo: 'entrada',
     reactivo_id: 0,
     cantidad: 0,
     unidad_medida: '',
     fecha_movimiento: new Date(),
-    usuario_id: 1 // Asume un usuario con ID 1 para este ejemplo
+    usuario_id: 0
   };
 
   // Paginación
@@ -71,6 +71,7 @@ export default class ListaComponent implements OnInit {
     private reactivoService: ReactivoService,
     private categoriaService: CategoriaService,
     private movimientosService: MovimientosService,
+    private authService: AuthService,
     private router: Router
   ) { }
 
@@ -199,6 +200,13 @@ export default class ListaComponent implements OnInit {
   }
 
   registrarMovimiento(): void {
+    const usuarioId = this.authService.getUserIdFromToken();
+    if (!usuarioId) {
+      this.authService.logout();
+      return;
+    }
+    this.nuevoMovimiento.usuario_id = usuarioId;
+
     this.movimientosService.createMovimiento(this.nuevoMovimiento).subscribe({
       next: (movimiento: IMovimiento) => {
         // Actualizar el stock del reactivo

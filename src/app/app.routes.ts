@@ -45,7 +45,7 @@ export const routes: Routes = [
         canActivate: [authGuard]
       },
       {
-        path: 'configuracion/:id',
+        path: 'configuracion',
         loadComponent: () => import('./business/config/config.component'),
         canActivate: [authGuard]
       },

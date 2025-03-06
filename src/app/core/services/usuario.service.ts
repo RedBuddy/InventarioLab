@@ -43,6 +43,18 @@ export class UsuarioService {
     );
   }
 
+  cambiarContrasena(id: number, contrasenaActual: string, nuevaContrasena: string): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/cambiar-contrasena`, { contrasenaActual, nuevaContrasena }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  actualizarImagenPerfil(id: number, formData: FormData): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/actualizar-imagen`, formData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Algo salió mal, intenta de nuevo.';
     if (error.error instanceof ErrorEvent) {

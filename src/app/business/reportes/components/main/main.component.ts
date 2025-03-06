@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { ReporteService } from '../../../../core/services/reporte.service';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-main',
@@ -25,6 +26,7 @@ export default class MainComponent implements OnInit {
 
   constructor(
     private reporteService: ReporteService,
+    private authService: AuthService,
     private router: Router
   ) { }
 
@@ -32,7 +34,14 @@ export default class MainComponent implements OnInit {
   }
 
   generarReporte(): void {
-    this.reporteService.generarReporte(this.selectedReportType, this.fechaInicio, this.fechaFin, 1).subscribe({
+
+    const usuarioId = this.authService.getUserIdFromToken();
+    if (!usuarioId) {
+      this.authService.logout();
+      return;
+    }
+
+    this.reporteService.generarReporte(this.selectedReportType, this.fechaInicio, this.fechaFin, usuarioId).subscribe({
       next: (data: any) => {
         this.reportData = data;
         this.reportHeaders = data.length > 0 ? Object.keys(data[0]) : [];

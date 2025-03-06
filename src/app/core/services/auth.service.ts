@@ -175,7 +175,7 @@ export class AuthService {
     const token = this.getToken();
     if (token) {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.user_id;
+      return payload.usuario_id;
     }
     return null;
   }
