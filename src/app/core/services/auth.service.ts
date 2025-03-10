@@ -9,16 +9,16 @@ import { tap, catchError, switchMap } from 'rxjs/operators';
 })
 
 export class AuthService {
-  private login_url: string = 'http://localhost:3000/login';
-  // private first_login_url: string = 'http://localhost:3000/login-bypass';
-  // private register_url: string = 'http://localhost:3000/register';
-  private profile_img_url: string = 'http://localhost:3000/users/profile_img';
-  // private verifyEmailUrl: string = 'http://localhost:3000/verify-email';
-  // private resentEmailUrl: string = 'http://localhost:3000/resend-verification-email';
-  private requestPasswordResetUrl: string = 'http://localhost:3000/request-password-reset';
-  private resetPasswordUrl: string = 'http://localhost:3000/reset-password';
+
+  // Clave secreta para firmar el token (debería estar en una variable de entorno)
+  private API_URL = process.env['API_URL'] || 'http://localhost:3000';
+
+  private login_url: string = `${this.API_URL}/login`;
+  private requestPasswordResetUrl: string = `${this.API_URL}/request-password-reset`;
+  private resetPasswordUrl: string = `${this.API_URL}/reset-password`;
+  private refresh_url: string = `${this.API_URL}/refresh-token`;
+
   private tokenKey = 'auth_token';
-  private refresh_url: string = 'http://localhost:3000/refresh-token';
   private RefreshTokenKey = 'refresh_token';
   private userImageKey = 'user_image';
 

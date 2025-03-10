@@ -10,7 +10,9 @@ import { IEquipo } from '../models/equipo.model';
 
 export class EquipoService {
 
-  private apiUrl = 'http://localhost:3000/equipos';
+  private API_URL = process.env['API_URL'] || 'http://localhost:3000';
+
+  private apiUrl = `${this.API_URL}/equipos`;
 
   constructor(private http: HttpClient) { }
 

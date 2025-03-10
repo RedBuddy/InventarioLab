@@ -9,7 +9,9 @@ import { ICategoria } from '../models/categoria.model';
 })
 export class CategoriaService {
 
-  private apiUrl = 'http://localhost:3000/categorias';
+  private API_URL = process.env['API_URL'] || 'http://localhost:3000';
+
+  private apiUrl = `${this.API_URL}/categorias`;
 
   constructor(private http: HttpClient) { }
 

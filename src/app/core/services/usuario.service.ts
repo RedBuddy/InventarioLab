@@ -9,7 +9,9 @@ import { IUsuario } from '../models/usuario.model';
 })
 export class UsuarioService {
 
-  private apiUrl = 'http://localhost:3000/usuarios';
+  private API_URL = process.env['API_URL'] || 'http://localhost:3000';
+
+  private apiUrl = `${this.API_URL}/usuarios`;
 
   constructor(private http: HttpClient) { }
 

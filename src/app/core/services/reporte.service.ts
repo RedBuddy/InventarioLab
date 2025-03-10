@@ -9,7 +9,9 @@ import { IReporteGenerado } from '../models/reporte_generado.model';
 })
 export class ReporteService {
 
-  private apiUrl = 'http://localhost:3000/reportes';
+  private API_URL = process.env['API_URL'] || 'http://localhost:3000';
+
+  private apiUrl = `${this.API_URL}/reportes`;
 
   constructor(private http: HttpClient) { }
 

@@ -10,7 +10,9 @@ import { IReactivo } from '../models/reactivo.model';
 
 export class ReactivoService {
 
-  private apiUrl = 'http://localhost:3000/reactivos';
+  private API_URL = process.env['API_URL'] || 'http://localhost:3000';
+
+  private apiUrl = `${this.API_URL}/reactivos`;
 
   constructor(private http: HttpClient) { }
 

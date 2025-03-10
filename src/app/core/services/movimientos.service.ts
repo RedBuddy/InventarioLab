@@ -9,7 +9,9 @@ import { IMovimiento } from '../models/movimiento.model';
 })
 export class MovimientosService {
 
-  private apiUrl = 'http://localhost:3000/movimientos';
+  private API_URL = process.env['API_URL'] || 'http://localhost:3000';
+
+  private apiUrl = `${this.API_URL}/movimientos`;
 
   constructor(private http: HttpClient) { }
 

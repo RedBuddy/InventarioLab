@@ -9,7 +9,9 @@ import { IMantenimiento } from '../models/mantenimiento.model';
 })
 export class MantenimientoService {
 
-  private apiUrl = 'http://localhost:3000/mantenimiento';
+  private API_URL = process.env['API_URL'] || 'http://localhost:3000';
+
+  private apiUrl = `${this.API_URL}/mantenimiento`;
 
   constructor(private http: HttpClient) { }
 
