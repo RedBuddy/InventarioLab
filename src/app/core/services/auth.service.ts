@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError, switchMap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,13 +11,10 @@ import { tap, catchError, switchMap } from 'rxjs/operators';
 
 export class AuthService {
 
-  // Clave secreta para firmar el token (debería estar en una variable de entorno)
-  private API_URL = process.env['API_URL'] || 'http://localhost:3000';
-
-  private login_url: string = `${this.API_URL}/login`;
-  private requestPasswordResetUrl: string = `${this.API_URL}/request-password-reset`;
-  private resetPasswordUrl: string = `${this.API_URL}/reset-password`;
-  private refresh_url: string = `${this.API_URL}/refresh-token`;
+  private login_url: string = `${environment.API_URL}/login`;
+  private requestPasswordResetUrl: string = `${environment.API_URL}/request-password-reset`;
+  private resetPasswordUrl: string = `${environment.API_URL}/reset-password`;
+  private refresh_url: string = `${environment.API_URL}/refresh-token`;
 
   private tokenKey = 'auth_token';
   private RefreshTokenKey = 'refresh_token';

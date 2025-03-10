@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { IReactivo } from '../models/reactivo.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,9 +11,7 @@ import { IReactivo } from '../models/reactivo.model';
 
 export class ReactivoService {
 
-  private API_URL = process.env['API_URL'] || 'http://localhost:3000';
-
-  private apiUrl = `${this.API_URL}/reactivos`;
+  private apiUrl = `${environment.API_URL}/reactivos`;
 
   constructor(private http: HttpClient) { }
 

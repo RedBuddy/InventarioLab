@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { IEquipo } from '../models/equipo.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,9 +11,7 @@ import { IEquipo } from '../models/equipo.model';
 
 export class EquipoService {
 
-  private API_URL = process.env['API_URL'] || 'http://localhost:3000';
-
-  private apiUrl = `${this.API_URL}/equipos`;
+  private apiUrl = `${environment.API_URL}/equipos`;
 
   constructor(private http: HttpClient) { }
 

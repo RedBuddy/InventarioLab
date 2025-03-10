@@ -3,15 +3,14 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { IMovimiento } from '../models/movimiento.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MovimientosService {
 
-  private API_URL = process.env['API_URL'] || 'http://localhost:3000';
-
-  private apiUrl = `${this.API_URL}/movimientos`;
+  private apiUrl = `${environment.API_URL}/movimientos`;
 
   constructor(private http: HttpClient) { }
 

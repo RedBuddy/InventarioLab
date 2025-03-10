@@ -3,15 +3,14 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { IReporteGenerado } from '../models/reporte_generado.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReporteService {
 
-  private API_URL = process.env['API_URL'] || 'http://localhost:3000';
-
-  private apiUrl = `${this.API_URL}/reportes`;
+  private apiUrl = `${environment.API_URL}/reportes`;
 
   constructor(private http: HttpClient) { }
 
