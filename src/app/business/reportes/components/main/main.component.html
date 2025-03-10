@@ -21,14 +21,16 @@
         <i class="fas fa-filter"></i>
         Tipo de Reporte
       </label>
-      <select id="reportType" [(ngModel)]="selectedReportType">
-        <option value="stock">Stock Actual</option>
+      <select id="reportType" [(ngModel)]="selectedReportType" (change)="limpiarDatosReporte()">
+        <option value="stock">Existencias de reactivos</option>
         <option value="movimientos">Movimientos</option>
         <option value="consumo">Consumo</option>
+        <option value="mantenimientos">Historial de Mantenimientos</option>
       </select>
     </div>
 
-    <div class="filter-group" *ngIf="selectedReportType === 'movimientos' || selectedReportType === 'consumo'">
+    <div class="filter-group"
+      *ngIf="selectedReportType === 'movimientos' || selectedReportType === 'consumo' || selectedReportType === 'mantenimientos'">
       <label for="fechaInicio">
         <i class="fas fa-calendar-alt"></i>
         Fecha Inicio
@@ -36,7 +38,8 @@
       <input type="date" id="fechaInicio" [(ngModel)]="fechaInicio">
     </div>
 
-    <div class="filter-group" *ngIf="selectedReportType === 'movimientos' || selectedReportType === 'consumo'">
+    <div class="filter-group"
+      *ngIf="selectedReportType === 'movimientos' || selectedReportType === 'consumo' || selectedReportType === 'mantenimientos'">
       <label for="fechaFin">
         <i class="fas fa-calendar-alt"></i>
         Fecha Fin
@@ -61,7 +64,7 @@
     </table>
   </div>
 
-  <div *ngIf="errorMessage" class="error-message">
+  <div *ngIf="errorMessage" class="message error">
     {{ errorMessage }}
   </div>
 </div>

@@ -21,12 +21,19 @@ export default class ConfigComponent implements OnInit {
   nuevaContrasena: string = '';
   confirmarContrasena: string = '';
   imagenPerfil: File | null = null;
-  errorMessage: string | null = null;
-  successMessage: string | null = null;
+
+  // Mensajes para cada sección
+  perfilSuccessMessage: string | null = null;
+  perfilErrorMessage: string | null = null;
+  contrasenaSuccessMessage: string | null = null;
+  contrasenaErrorMessage: string | null = null;
+  imagenSuccessMessage: string | null = null;
+  imagenErrorMessage: string | null = null;
 
   constructor(
     private authService: AuthService,
-    private usuarioService: UsuarioService
+    private usuarioService: UsuarioService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -44,10 +51,10 @@ export default class ConfigComponent implements OnInit {
     this.usuarioService.getUsuario(usuarioId).subscribe({
       next: (data: IUsuario) => {
         this.usuario = data;
-        this.errorMessage = null;
+        this.perfilErrorMessage = null;
       },
       error: (err) => {
-        this.errorMessage = err.message;
+        this.perfilErrorMessage = err.message;
       }
     });
   }
@@ -55,33 +62,33 @@ export default class ConfigComponent implements OnInit {
   actualizarPerfil(): void {
     this.usuarioService.updateUsuario(this.usuario.id, this.usuario).subscribe({
       next: () => {
-        this.successMessage = 'Perfil actualizado correctamente';
-        this.errorMessage = null;
+        this.perfilSuccessMessage = 'Perfil actualizado correctamente';
+        this.perfilErrorMessage = null;
       },
       error: (err) => {
-        this.errorMessage = err.message;
-        this.successMessage = null;
+        this.perfilErrorMessage = err.message;
+        this.perfilSuccessMessage = null;
       }
     });
   }
 
   cambiarContrasena(): void {
     if (this.nuevaContrasena !== this.confirmarContrasena) {
-      this.errorMessage = 'Las contraseñas no coinciden';
+      this.contrasenaErrorMessage = 'Las contraseñas no coinciden';
       return;
     }
 
     this.usuarioService.cambiarContrasena(this.usuario.id, this.contrasenaActual, this.nuevaContrasena).subscribe({
       next: () => {
-        this.successMessage = 'Contraseña actualizada correctamente';
-        this.errorMessage = null;
+        this.contrasenaSuccessMessage = 'Contraseña actualizada correctamente';
+        this.contrasenaErrorMessage = null;
         this.contrasenaActual = '';
         this.nuevaContrasena = '';
         this.confirmarContrasena = '';
       },
       error: (err) => {
-        this.errorMessage = err.message;
-        this.successMessage = null;
+        this.contrasenaErrorMessage = err.message;
+        this.contrasenaSuccessMessage = null;
       }
     });
   }
@@ -100,17 +107,17 @@ export default class ConfigComponent implements OnInit {
 
       this.usuarioService.actualizarImagenPerfil(this.usuario.id, formData).subscribe({
         next: () => {
-          this.successMessage = 'Imagen de perfil actualizada correctamente';
-          this.errorMessage = null;
+          this.imagenSuccessMessage = 'Imagen de perfil actualizada correctamente';
+          this.imagenErrorMessage = null;
           this.cargarUsuario(); // Recargar los datos del usuario para actualizar la imagen
         },
         error: (err) => {
-          this.errorMessage = err.message;
-          this.successMessage = null;
+          this.imagenErrorMessage = err.message;
+          this.imagenSuccessMessage = null;
         }
       });
     } else {
-      this.errorMessage = 'Por favor, selecciona una imagen';
+      this.imagenErrorMessage = 'Por favor, selecciona una imagen';
     }
   }
 

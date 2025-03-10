@@ -30,12 +30,11 @@
       Actualizar Perfil
     </button>
 
-    <div *ngIf="successMessage && !contrasenaActual && !nuevaContrasena && !confirmarContrasena"
-      class="message success">
-      {{ successMessage }}
+    <div *ngIf="perfilSuccessMessage" class="message success">
+      {{ perfilSuccessMessage }}
     </div>
-    <div *ngIf="errorMessage && !contrasenaActual && !nuevaContrasena && !confirmarContrasena" class="message error">
-      {{ errorMessage }}
+    <div *ngIf="perfilErrorMessage" class="message error">
+      {{ perfilErrorMessage }}
     </div>
   </form>
 
@@ -71,11 +70,11 @@
       Cambiar Contraseña
     </button>
 
-    <div *ngIf="successMessage && contrasenaActual && nuevaContrasena && confirmarContrasena" class="message success">
-      {{ successMessage }}
+    <div *ngIf="contrasenaSuccessMessage" class="message success">
+      {{ contrasenaSuccessMessage }}
     </div>
-    <div *ngIf="errorMessage && contrasenaActual && nuevaContrasena && confirmarContrasena" class="message error">
-      {{ errorMessage }}
+    <div *ngIf="contrasenaErrorMessage" class="message error">
+      {{ contrasenaErrorMessage }}
     </div>
   </form>
 
@@ -93,12 +92,12 @@
       <i class="fas fa-upload"></i>
       Actualizar Imagen
     </button>
-  </form>
 
-  <div *ngIf="successMessage && imagenPerfil" class="message success">
-    {{ successMessage }}
-  </div>
-  <div *ngIf="errorMessage && imagenPerfil" class="message error">
-    {{ errorMessage }}
-  </div>
+    <div *ngIf="imagenSuccessMessage" class="message success">
+      {{ imagenSuccessMessage }}
+    </div>
+    <div *ngIf="imagenErrorMessage" class="message error">
+      {{ imagenErrorMessage }}
+    </div>
+  </form>
 </div>

@@ -14,7 +14,6 @@ import { AuthService } from '../../../../core/services/auth.service';
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
-
 export default class MainComponent implements OnInit {
 
   selectedReportType = 'stock';
@@ -33,7 +32,14 @@ export default class MainComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  limpiarDatosReporte(): void {
+    this.reportData = [];
+    this.reportHeaders = [];
+    this.errorMessage = null;
+  }
+
   generarReporte(): void {
+    this.limpiarDatosReporte();
 
     const usuarioId = this.authService.getUserIdFromToken();
     if (!usuarioId) {
@@ -43,10 +49,14 @@ export default class MainComponent implements OnInit {
 
     this.reporteService.generarReporte(this.selectedReportType, this.fechaInicio, this.fechaFin, usuarioId).subscribe({
       next: (data: any) => {
-        this.reportData = data;
-        this.reportHeaders = data.length > 0 ? Object.keys(data[0]) : [];
-        this.errorMessage = null;
-        this.generarPDF();
+        if (typeof data === 'string') {
+          this.errorMessage = data;
+        } else {
+          this.reportData = data;
+          this.reportHeaders = data.length > 0 ? Object.keys(data[0]) : [];
+          this.errorMessage = null;
+          this.generarPDF();
+        }
       },
       error: (err) => {
         this.errorMessage = err.message;

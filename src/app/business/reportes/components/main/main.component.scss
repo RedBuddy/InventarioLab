@@ -130,10 +130,29 @@ $text-muted: #7f8c8d;
     }
   }
 
-  .error-message {
-    color: $danger;
-    font-weight: 600;
-    margin-top: 1rem;
+  .message {
+    padding: 1rem;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+
+    &.success {
+      background: rgba($success, 0.1);
+      color: $success;
+      border: 1px solid $success;
+    }
+
+    &.error {
+      background: rgba($danger, 0.1);
+      color: $danger;
+      border: 1px solid $danger;
+    }
+
+    i {
+      font-size: 1.2rem;
+    }
   }
 
   @media (max-width: 768px) {

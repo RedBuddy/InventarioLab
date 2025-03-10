@@ -42,7 +42,7 @@ export class AuthService {
           this.autoRefreshToken();
           this.isAuthenticatedSubject.next(true);
           this.userRoleSubject.next(this.getUserRole());
-          // this.fetchUserProfileImage(res.imagen); // Obtener la imagen del usuario
+          this.fetchUserProfileImage(res.imagen); // Obtener la imagen del usuario
           this.router.navigate(['inicio']);
         }
       }),
@@ -63,26 +63,21 @@ export class AuthService {
     );
   }
 
-  private fetchUserProfileImage(userId: number | null): void {
-    if (!userId) {
-      console.error('No user ID found');
+  private fetchUserProfileImage(imagen: { type: string; data: number[] }): void {
+    if (!imagen) {
+      console.error('No image data found');
       return;
     }
-    this.HttpClient.get(`${this.profile_img_url}/${userId}`, { responseType: 'blob' }).pipe(
-      tap(blob => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const imageUrl = reader.result as string;
-          this.userImageSubject.next(imageUrl);
-          this.setUserImage(imageUrl); // Guardar la imagen en el localStorage
-        };
-        reader.readAsDataURL(blob);
-      }),
-      catchError(error => {
-        console.error('Error fetching user profile image:', error);
-        return throwError(error);
-      })
-    ).subscribe();
+
+    const byteArray = new Uint8Array(imagen.data);
+    const blob = new Blob([byteArray], { type: imagen.type });
+    const reader = new FileReader();
+    reader.onload = () => {
+      const imageUrl = reader.result as string;
+      this.userImageSubject.next(imageUrl);
+      this.setUserImage(imageUrl); // Guardar la imagen en el localStorage
+    };
+    reader.readAsDataURL(blob);
   }
 
   private setToken(token: string): void {
