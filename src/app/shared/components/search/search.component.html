@@ -11,12 +11,12 @@
     <div class="user-image-container" (click)="toggleDropdown()">
       <img *ngIf="userImage; else defaultImage" [src]="userImage" alt="User">
       <ng-template #defaultImage>
-        <img src="assets/icons/usuario.png" alt="User">
+        <img src="icons/usuario.png" alt="User">
       </ng-template>
     </div>
     <div class="user-dropdown-content" *ngIf="isDropdownVisible">
-      <a (click)="goToProfile()">Mi perfil</a>
-      <a routerLink="config">Configuración</a>
+      <!-- <a (click)="goToProfile()">Mi perfil</a> -->
+      <a routerLink="configuracion">Configuración</a>
       <div *ngIf="userRole === 'admin'">
         <hr>
         <a routerLink="admin">Panel de administración</a>

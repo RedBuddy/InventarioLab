@@ -14,6 +14,7 @@ import { IUsuario } from '../../core/models/usuario.model';
   templateUrl: './config.component.html',
   styleUrl: './config.component.scss'
 })
+
 export default class ConfigComponent implements OnInit {
 
   usuario: IUsuario = { id: 0, nombre: '', email: '', contrasena: '', rol: 'usuario', activo: true };
@@ -59,10 +60,10 @@ export default class ConfigComponent implements OnInit {
     });
   }
 
-  actualizarPerfil(): void {
-    this.usuarioService.updateUsuario(this.usuario.id, this.usuario).subscribe({
+  actualizarNombre(): void {
+    this.usuarioService.updateUsuarioNombre(this.usuario.id, this.usuario.nombre).subscribe({
       next: () => {
-        this.perfilSuccessMessage = 'Perfil actualizado correctamente';
+        this.perfilSuccessMessage = 'Nombre actualizado correctamente';
         this.perfilErrorMessage = null;
       },
       error: (err) => {

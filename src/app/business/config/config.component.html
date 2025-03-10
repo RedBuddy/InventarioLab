@@ -8,7 +8,7 @@
   </div>
 
   <!-- Profile Update Form -->
-  <form class="config-form" (ngSubmit)="actualizarPerfil()">
+  <form class="config-form" (ngSubmit)="actualizarNombre()">
     <div class="form-group">
       <label for="nombre">
         <i class="fas fa-user"></i>
@@ -27,7 +27,7 @@
 
     <button type="submit" class="config-btn">
       <i class="fas fa-save"></i>
-      Actualizar Perfil
+      Actualizar Nombre
     </button>
 
     <div *ngIf="perfilSuccessMessage" class="message success">

@@ -13,8 +13,8 @@ export class ReporteService {
 
   constructor(private http: HttpClient) { }
 
-  generarReporte(tipo: string, fechaInicio: string, fechaFin: string, usuarioId: number): Observable<any> {
-    const params = { tipo, fechaInicio, fechaFin, usuarioId };
+  generarReporte(tipo: string, fechaInicio: string, fechaFin: string, equipo: string, usuarioId: number): Observable<any> {
+    const params = { tipo, fechaInicio, fechaFin, equipo, usuarioId };
     return this.http.get<any>(this.apiUrl, { params }).pipe(
       catchError(this.handleError)
     );

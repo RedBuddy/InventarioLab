@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReporteService } from '../../../../core/services/reporte.service';
+import { EquipoService } from '../../../../core/services/equipo.service';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -19,17 +20,32 @@ export default class MainComponent implements OnInit {
   selectedReportType = 'stock';
   fechaInicio = '';
   fechaFin = '';
+  equipoId = '';
+  equipos: any[] = [];
   reportData: any[] = [];
   reportHeaders: string[] = [];
   errorMessage: string | null = null;
 
   constructor(
     private reporteService: ReporteService,
+    private equipoService: EquipoService,
     private authService: AuthService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
+    this.cargarEquipos();
+  }
+
+  cargarEquipos(): void {
+    this.equipoService.getEquipos().subscribe({
+      next: (data: any[]) => {
+        this.equipos = [{ id: '', nombre: 'TODOS' }, ...data];
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+      }
+    });
   }
 
   limpiarDatosReporte(): void {
@@ -47,7 +63,21 @@ export default class MainComponent implements OnInit {
       return;
     }
 
-    this.reporteService.generarReporte(this.selectedReportType, this.fechaInicio, this.fechaFin, usuarioId).subscribe({
+    const params = {
+      tipo: this.selectedReportType,
+      fechaInicio: this.fechaInicio,
+      fechaFin: this.fechaFin,
+      equipoId: this.equipoId,
+      usuarioId: usuarioId
+    };
+
+    this.reporteService.generarReporte(
+      this.selectedReportType,
+      this.fechaInicio,
+      this.fechaFin,
+      this.equipoId,
+      usuarioId
+    ).subscribe({
       next: (data: any) => {
         if (typeof data === 'string') {
           this.errorMessage = data;

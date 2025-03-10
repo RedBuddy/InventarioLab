@@ -55,6 +55,12 @@ export class UsuarioService {
     );
   }
 
+  updateUsuarioNombre(id: number, nombre: string): Observable<IUsuario> {
+    return this.http.put<IUsuario>(`${this.apiUrl}/${id}/actualizar-nombre`, { nombre }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Algo salió mal, intenta de nuevo.';
     if (error.error instanceof ErrorEvent) {
