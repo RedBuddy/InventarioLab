@@ -8,7 +8,10 @@ export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () => import('./business/authentication/login/login.component'),
-    //canActivate: [authGuard]
+  },
+  {
+    path: 'restablecer-contra',
+    loadComponent: () => import('./business/authentication/reset-password/reset-password.component')
   },
   {
     path: '',
@@ -56,7 +59,6 @@ export const routes: Routes = [
       }
     ]
   },
-
   {
     path: '**',
     redirectTo: 'inicio'
