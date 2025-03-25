@@ -1,30 +1,32 @@
 <!-- Main Content -->
 <main class="main-content">
   <!-- Low Stock Section -->
-  <section class="card">
+  <section class="card fr3">
     <h3><i class="fas fa-exclamation-triangle"></i> Artículos con stock más bajo</h3>
     <table class="data-table">
       <thead>
         <tr>
           <th>Nombre</th>
           <th>Categoría</th>
-          <th>Cantidad restante</th>
+          <th>Cantidad Restante</th>
+          <th>Unidad de Medida</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let articulo of articulosStockBajo">
-          <td>{{ articulo.nombre }}</td>
-          <td>{{ articulo.categoria }}</td>
-          <td [class]="getStockClass(articulo.cantidad_total)">{{ articulo.cantidad_total }}</td>
+        <tr *ngFor="let reactivo of articulosStockBajo">
+          <td>{{ reactivo.nombre }}</td>
+          <td>{{ reactivo.categoria }}</td>
+          <td>{{ reactivo.cantidad_restante || 'N/A' }}</td>
+          <td>{{ reactivo.unidad_original || 'N/A' }}</td>
         </tr>
       </tbody>
     </table>
   </section>
 
   <!-- Dashboard Widgets -->
-  <div class="dashboard-widgets">
-    <!-- Summary Cards -->
-    <div class="cards-container">
+  <!-- <div class="dashboard-widgets"> -->
+  <!-- Summary Cards -->
+  <!-- <div class="cards-container">
       <section class="card summary-card">
         <h3><i class="fas fa-flask"></i> Resumen de reactivos</h3>
         <div class="summary-content">
@@ -40,33 +42,37 @@
           <span class="summary-label">Equipos</span>
         </div>
       </section>
-    </div>
+    </div> -->
 
-    <!-- Recent Movements -->
-    <section class="card">
-      <h3><i class="fas fa-exchange-alt"></i> Movimientos Recientes</h3>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Fecha</th>
-            <th>Tipo</th>
-            <th>Artículo</th>
-            <th>Cantidad</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let movimiento of movimientosRecientes">
-            <td>{{ movimiento.fecha_movimiento | date }}</td>
-            <td>{{ movimiento.tipo }}</td>
-            <td>{{ movimiento.articulo }}</td>
-            <td>{{ movimiento.cantidad }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+  <!-- Recent Movements -->
+  <section class="card fr1">
+    <h3><i class="fas fa-exchange-alt"></i> Movimientos Recientes</h3>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Tipo</th>
+          <th>Artículo</th>
+          <th>Cantidad</th>
+          <th>Unidad</th>
+          <th>Responsable</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let movimiento of movimientosRecientes">
+          <td>{{ movimiento.fecha | date: 'short' }}</td>
+          <td>{{ movimiento.tipo }}</td>
+          <td>{{ movimiento.articulo }}</td>
+          <td>{{ movimiento.cantidad }}</td>
+          <td>{{ movimiento.unidad_medida }}</td>
+          <td>{{ movimiento.responsable }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
 
-    <!-- Upcoming Maintenances -->
-    <!-- <section class="card">
+  <!-- Upcoming Maintenances -->
+  <!-- <section class="card">
       <h3><i class="fas fa-tools"></i> Próximos Mantenimientos</h3>
       <table class="data-table">
         <thead>
@@ -86,17 +92,18 @@
       </table>
     </section> -->
 
-    <!-- Reports Card -->
-    <section class="card">
-      <h3><i class="fas fa-users"></i> Reportes generados</h3>
-      <table class="reports-table">
-        <tbody>
-          <tr *ngFor="let reporte of reportesGenerados">
-            <td>{{ reporte.tipo }}</td>
-            <td class="report-date">{{ reporte.fechaGeneracion | date }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-  </div>
+  <!-- Reports Card -->
+  <section class="card">
+    <h3><i class="fas fa-users"></i> Reportes generados</h3>
+    <table class="reports-table">
+      <tbody>
+        <tr *ngFor="let reporte of reportesGenerados">
+          <td class="truncate">{{ reporte.nombre }}</td>
+          <td>{{ reporte.tipo }}</td>
+          <td>{{ reporte.fecha | date: 'short' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <!-- </div> -->
 </main>

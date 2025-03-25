@@ -44,6 +44,12 @@ export class MovimientosService {
     );
   }
 
+  getUltimosMovimientos(): Observable<IMovimiento[]> {
+    return this.http.get<IMovimiento[]>(`${this.apiUrl}-ultimos`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Algo salió mal, intenta de nuevo.';
     if (error.error instanceof ErrorEvent) {

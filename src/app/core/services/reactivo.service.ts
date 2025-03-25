@@ -45,6 +45,13 @@ export class ReactivoService {
     );
   }
 
+  // Nuevo método para obtener reactivos con stock bajo
+  getReactivosConStockBajo(): Observable<IReactivo[]> {
+    return this.http.get<IReactivo[]>(`${this.apiUrl}-stock-bajo`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Algo salió mal, intenta de nuevo.';
     if (error.error instanceof ErrorEvent) {

@@ -22,7 +22,7 @@ export default class InicioComponent implements OnInit {
   articulosStockBajo: any[] = [];
   movimientosRecientes: any[] = [];
   // proximosMantenimientos: any[] = [];
-  reportesGenerados: IReporteGenerado[] = [];
+  reportesGenerados: any[] = [];
   errorMessage: string | null = null;
 
   constructor(
@@ -68,12 +68,9 @@ export default class InicioComponent implements OnInit {
   }
 
   cargarArticulosStockBajo(): void {
-    this.reactivoService.getReactivos().subscribe({
+    this.reactivoService.getReactivosConStockBajo().subscribe({
       next: (data) => {
-        this.articulosStockBajo = data
-          .filter(reactivo => reactivo.cantidad_total <= 10)
-          .sort((a, b) => a.cantidad_total - b.cantidad_total)
-          .slice(0, 5); // Mostrar los 5 reactivos con stock más bajo
+        this.articulosStockBajo = data; // Asignar directamente los datos devueltos por el endpoint
         this.errorMessage = null;
       },
       error: (err) => {
@@ -83,11 +80,9 @@ export default class InicioComponent implements OnInit {
   }
 
   cargarMovimientosRecientes(): void {
-    this.movimientosService.getMovimientos().subscribe({
+    this.movimientosService.getUltimosMovimientos().subscribe({
       next: (data) => {
-        this.movimientosRecientes = data
-          .sort((a, b) => new Date(b.fecha_movimiento).getTime() - new Date(a.fecha_movimiento).getTime())
-          .slice(0, 5); // Mostrar los 5 movimientos más recientes
+        this.movimientosRecientes = data; // Asignar directamente los datos devueltos por el endpoint
         this.errorMessage = null;
       },
       error: (err) => {
@@ -113,10 +108,8 @@ export default class InicioComponent implements OnInit {
 
   cargarReportesGenerados(): void {
     this.reporteService.getReportesGenerados().subscribe({
-      next: (data: IReporteGenerado[]) => {
-        this.reportesGenerados = data
-          .sort((a, b) => new Date(b.fechaGeneracion).getTime() - new Date(a.fechaGeneracion).getTime())
-          .slice(0, 5); // Mostrar los 5 reportes más recientes
+      next: (data) => {
+        this.reportesGenerados = data; // Asignar directamente los datos devueltos por el endpoint
         this.errorMessage = null;
       },
       error: (err) => {

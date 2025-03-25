@@ -17,6 +17,10 @@ aside {
     gap: 0.5rem;
     margin-bottom: 1rem;
 
+    &:hover {
+      cursor: pointer;
+    }
+
     .cont-img {
       width: 3rem;
       // height: 8rem;
