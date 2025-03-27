@@ -114,6 +114,7 @@ export default class MainComponent implements OnInit {
           activo: true
         };
         this.errorMessage = null;
+        this.cargarUsuarios();
         this.cerrarModal();
       },
       error: (err) => {
@@ -147,6 +148,7 @@ export default class MainComponent implements OnInit {
             this.filteredUsuarios = this.usuarios;
           }
           this.errorMessage = null;
+          this.cargarUsuarios();
           this.cerrarModalEdicion();
         },
         error: (err) => {

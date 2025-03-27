@@ -185,6 +185,8 @@ export default class ListaComponent implements OnInit {
           estado: 'activo'
         };
         this.errorMessage = null;
+        this.cargarEquipos();
+        this.cargarMantenimientos();
         this.cerrarModal();
       },
       error: (err) => {
@@ -203,6 +205,8 @@ export default class ListaComponent implements OnInit {
             this.filteredEquipos = this.equipos;
           }
           this.errorMessage = null;
+          this.cargarEquipos();
+          this.cargarMantenimientos();
           this.cerrarModalEdicion();
         },
         error: (err) => {
@@ -217,6 +221,8 @@ export default class ListaComponent implements OnInit {
       next: (mantenimiento: IMantenimiento) => {
         this.mantenimientos.push(mantenimiento);
         this.errorMessage = null;
+        this.cargarEquipos();
+        this.cargarMantenimientos();
         this.cerrarModalMantenimiento();
       },
       error: (err) => {
@@ -229,6 +235,8 @@ export default class ListaComponent implements OnInit {
     if (confirm('¿Estás seguro de que deseas eliminar este equipo?')) {
       this.equipoService.deleteEquipo(id).subscribe({
         next: () => {
+          this.cargarEquipos();
+          this.cargarMantenimientos();
           this.cargarEquipos();
           this.errorMessage = null;
         },

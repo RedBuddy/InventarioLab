@@ -184,6 +184,7 @@ export default class ListaComponent implements OnInit {
           estado: 'disponible'
         };
         this.errorMessage = null;
+        this.cargarReactivos();
         this.cerrarModal();
       },
       error: (err) => {
@@ -201,6 +202,7 @@ export default class ListaComponent implements OnInit {
           this.filteredReactivos = this.reactivos;
         }
         this.errorMessage = null;
+        this.cargarReactivos();
         this.cerrarModalEdicion();
       },
       error: (err) => {
@@ -232,6 +234,7 @@ export default class ListaComponent implements OnInit {
           this.actualizarReactivo(reactivo); // Actualizar el reactivo en el backend
         }
         this.errorMessage = null;
+        this.cargarReactivos();
         this.cerrarModalMovimiento();
       },
       error: (err) => {
