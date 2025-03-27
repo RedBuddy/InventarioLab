@@ -161,7 +161,7 @@ export class AuthService {
     }
 
     const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.rol || null; // Asume que el rol está en el campo 'role' del payload
+    return payload.rol || null; // Asume que el rol está en el campo 'rol' del payload
   }
 
   getUserIdFromToken(): number | null {

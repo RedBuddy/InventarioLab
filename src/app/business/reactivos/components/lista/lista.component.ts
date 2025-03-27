@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { IReactivo } from '../../../../core/models/reactivo.model';
 import { ICategoria } from '../../../../core/models/categoria.model';
@@ -28,6 +29,10 @@ export default class ListaComponent implements OnInit {
   isModalOpen: boolean = false;
   isEditModalOpen: boolean = false;
   isMovimientoModalOpen: boolean = false;
+  userRole: string | null = null;
+
+  private subscriptions: Subscription = new Subscription();
+
   reactivoSeleccionado: IReactivo = {
     id: 0,
     clave: '',
@@ -76,6 +81,11 @@ export default class ListaComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.subscriptions.add(
+      this.authService.userRole$.subscribe(userRole => {
+        this.userRole = userRole;
+      })
+    );
     this.cargarReactivos();
     this.cargarCategorias();
   }

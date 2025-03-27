@@ -14,6 +14,10 @@ export const routes: Routes = [
     loadComponent: () => import('./business/authentication/reset-password/reset-password.component')
   },
   {
+    path: 'access-denied',
+    loadComponent: () => import('./shared/components/access-denied/access-denied.component')
+  },
+  {
     path: '',
     loadComponent: () => import('./shared/components/layout/layout.component'),
     children: [
@@ -35,17 +39,20 @@ export const routes: Routes = [
       {
         path: 'reportes',
         loadComponent: () => import('./business/reportes/components/main/main.component'),
-        canActivate: [authGuard]
+        canActivate: [roleGuard],
+        data: { expectedRoles: ['mod', 'admin'] }
       },
       {
         path: 'usuarios',
         loadComponent: () => import('./business/usuarios/components/main/main.component'),
-        canActivate: [authGuard]
+        canActivate: [roleGuard],
+        data: { expectedRoles: ['admin'] }
       },
       {
         path: 'categorias',
         loadComponent: () => import('./business/categorias/categorias.component'),
-        canActivate: [authGuard]
+        canActivate: [roleGuard],
+        data: { expectedRoles: ['mod', 'admin'] }
       },
       {
         path: 'configuracion',

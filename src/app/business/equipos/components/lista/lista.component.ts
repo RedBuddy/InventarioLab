@@ -2,10 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { IEquipo } from '../../../../core/models/equipo.model';
 import { IMantenimiento } from '../../../../core/models/mantenimiento.model';
 import { EquipoService } from '../../../../core/services/equipo.service';
 import { MantenimientoService } from '../../../../core/services/mantenimiento.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-lista',
@@ -15,6 +17,8 @@ import { MantenimientoService } from '../../../../core/services/mantenimiento.se
   styleUrl: './lista.component.scss'
 })
 export default class ListaComponent implements OnInit {
+
+  userRole: string | null = null;
 
   searchText = '';
   selectedStatus = '';
@@ -73,13 +77,22 @@ export default class ListaComponent implements OnInit {
     tecnico: ''
   };
 
+  private subscriptions: Subscription = new Subscription();
+
   constructor(
     private equipoService: EquipoService,
     private mantenimientoService: MantenimientoService,
-    private router: Router
+    // private router: Router,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
+    this.subscriptions.add(
+      this.authService.userRole$.subscribe(userRole => {
+        this.userRole = userRole;
+      })
+    );
+
     this.cargarEquipos();
     this.cargarMantenimientos();
   }

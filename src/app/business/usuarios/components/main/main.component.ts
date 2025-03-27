@@ -27,14 +27,8 @@ export default class MainComponent implements OnInit {
   currentPage: number = 1;
   itemsPerPage: number = 10;
 
-  usuarioSeleccionado: IUsuario = {
-    id: 0,
-    nombre: '',
-    email: '',
-    contrasena: '',
-    rol: 'usuario',
-    activo: true
-  };
+  usuarioSeleccionado: any = {}; // Usuario seleccionado para edición
+  nuevaContrasena: string = '';
 
   nuevoUsuario: IUsuario = {
     id: 0,
@@ -88,11 +82,21 @@ export default class MainComponent implements OnInit {
   }
 
   abrirModalEdicion(usuario: IUsuario): void {
-    this.usuarioSeleccionado = { ...usuario };
+    this.usuarioSeleccionado = { ...usuario }; // Clonar el usuario seleccionado
+    this.nuevaContrasena = ''; // Limpiar la contraseña
     this.isEditModalOpen = true;
   }
 
   cerrarModalEdicion(): void {
+    this.usuarioSeleccionado = {
+      id: 0,
+      nombre: '',
+      email: '',
+      contrasena: '',
+      rol: 'usuario',
+      activo: true
+    };
+    this.nuevaContrasena = ''; // Limpiar la contraseña
     this.isEditModalOpen = false;
   }
 
@@ -120,8 +124,23 @@ export default class MainComponent implements OnInit {
 
   actualizarUsuario(): void {
     if (this.usuarioSeleccionado) {
-      this.usuarioService.updateUsuario(this.usuarioSeleccionado.id!, this.usuarioSeleccionado).subscribe({
+      // Crear una copia del usuario seleccionado
+      const usuarioActualizado = { ...this.usuarioSeleccionado };
+
+      // Solo incluir la nueva contraseña si el usuario la proporciona
+      if (this.nuevaContrasena) {
+        usuarioActualizado.contrasena = this.nuevaContrasena;
+      } else {
+        // Eliminar la contraseña del objeto para evitar que se envíe
+        delete usuarioActualizado.contrasena;
+      }
+
+      console.log('usuarioActualizado', usuarioActualizado);
+
+      // Llamar al servicio para actualizar el usuario
+      this.usuarioService.updateUsuario(usuarioActualizado.id!, usuarioActualizado).subscribe({
         next: (usuario: IUsuario) => {
+          // Actualizar la lista de usuarios con los datos actualizados
           const index = this.usuarios.findIndex(u => u.id === usuario.id);
           if (index !== -1) {
             this.usuarios[index] = usuario;

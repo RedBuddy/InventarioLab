@@ -4,7 +4,7 @@
       <i class="fas fa-microscope icon"></i>
       Gestión de Equipos
     </h2>
-    <button class="equipos-btn-primary" (click)="abrirModal()">
+    <button *ngIf="userRole === 'admin' || userRole === 'mod' " class="equipos-btn-primary" (click)="abrirModal()">
       <i class="fas fa-plus"></i>
       Nuevo Equipo
     </button>
@@ -73,7 +73,8 @@
           }">{{ capitalizeFirstLetter(equipo.estado) }}</td>
           <td>
             <div class="equipos-actions">
-              <button class="equipos-btn-icon info" (click)="abrirModalEdicion(equipo)">
+              <button *ngIf="userRole === 'admin' || userRole === 'mod' " class="equipos-btn-icon info"
+                (click)="abrirModalEdicion(equipo)">
                 <i class="fas fa-edit"></i>
               </button>
               <!-- <button class="equipos-btn-icon danger" (click)="eliminarEquipo(equipo.id)">

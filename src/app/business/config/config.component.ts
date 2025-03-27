@@ -97,7 +97,25 @@ export default class ConfigComponent implements OnInit {
   seleccionarImagenPerfil(event: any): void {
     const file = event.target.files[0];
     if (file) {
+      // Validar que el archivo sea una imagen
+      const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+      if (!validImageTypes.includes(file.type)) {
+        this.imagenErrorMessage = 'El archivo debe ser una imagen (JPEG, PNG o GIF).';
+        this.imagenPerfil = null;
+        return;
+      }
+
+      // Validar que el tamaño del archivo no supere 16 MB
+      const maxSizeInBytes = 16 * 1024 * 1024; // 16 MB
+      if (file.size > maxSizeInBytes) {
+        this.imagenErrorMessage = 'El archivo no debe superar los 16 MB.';
+        this.imagenPerfil = null;
+        return;
+      }
+
+      // Si pasa las validaciones, asignar el archivo
       this.imagenPerfil = file;
+      this.imagenErrorMessage = null;
     }
   }
 

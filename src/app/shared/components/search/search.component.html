@@ -17,10 +17,10 @@
     <div class="user-dropdown-content" *ngIf="isDropdownVisible">
       <!-- <a (click)="goToProfile()">Mi perfil</a> -->
       <a routerLink="configuracion">Configuración</a>
-      <div *ngIf="userRole === 'admin'">
+      <!-- <div *ngIf="userRole === 'admin'">
         <hr>
         <a routerLink="admin">Panel de administración</a>
-      </div>
+      </div> -->
       <hr>
       <a (click)="logout()">Logout</a>
     </div>
