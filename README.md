@@ -129,6 +129,10 @@ src/
 - `chart.js` - Gráficas
 - `jspdf` - Generación de PDFs
 
-## 📄 Licencia
+## � Autor
+
+**Orlando Armando Apodaca Concha**
+
+## �📄 Licencia
 
 MIT
